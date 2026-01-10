@@ -12,9 +12,12 @@ typedef struct Game
 void Game_Loop(Game *pGame);
 void Game_Init(Game *pGame);
 void Game_Update(Game *pGame);
-void Game_Input(Game *pGame);
+void Game_Events(Game *pGame);
 void Game_Draw(Game *pGame);
 void Game_Close(Game *pGame);
+
+// TODO: Create a `Simulation` struct that takes care of user interaction and
+// view of a `Grid` (probably using **Camera2D**)
 
 int main(void)
 {
@@ -38,7 +41,7 @@ void Game_Loop(Game *pGame)
 {
 	while (!WindowShouldClose())
 	{
-		Game_Input(pGame);
+		Game_Events(pGame);
 		Game_Update(pGame);
 		Game_Draw(pGame);
 	}
@@ -46,10 +49,13 @@ void Game_Loop(Game *pGame)
 
 void Game_Init(Game *pGame)
 {
-	Grid_Init(&pGame->sim, 1000, 1000, 1);
+	const int width = 100;
+	const int height = 100;
+	const int cellSize = 4;
+	Grid_Init(&pGame->sim, width, height, cellSize);
 }
 
-void Game_Input(Game *pGame)
+void Game_Events(Game *pGame)
 {
 	(void)pGame;
 }
