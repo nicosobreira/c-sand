@@ -1,12 +1,17 @@
 #include <stddef.h>
+#include <string.h>
 
 #include "raylib.h"
 
-#include "simulation/grid.h"
+#include "simulation/simulation.h"
 
 typedef struct Game
 {
-	Grid sim;
+	Simulation sim;
+	Font fonts[1];
+	int fps;
+	int windowWidth;
+	int windowHeight;
 } Game;
 
 void Game_Loop(Game *pGame);
@@ -19,10 +24,22 @@ void Game_Close(Game *pGame);
 // TODO: Create a `Simulation` struct that takes care of user interaction and
 // view of a `Grid` (probably using **Camera2D**)
 
+static void initRaylib(void)
+{
+	const int windowWidth = 800;
+	const int windowHeight = 450;
+	const int fps = 60;
+
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+	InitWindow(windowWidth, windowHeight, "Sand Simulator");
+	SetTargetFPS(fps);
+
+	SetTraceLogLevel(LOG_DEBUG);
+}
+
 int main(void)
 {
-	InitWindow(800, 450, "Sand Sim");
-	SetTargetFPS(60);
+	initRaylib();
 
 	Game game;
 
@@ -49,37 +66,37 @@ void Game_Loop(Game *pGame)
 
 void Game_Init(Game *pGame)
 {
-	const int width = 100;
-	const int height = 100;
-	const int cellSize = 4;
-	Grid_Init(&pGame->sim, width, height, cellSize);
+	memset(pGame, 0, sizeof(Game));
+
+	Simulation_Init(&pGame->sim);
 }
 
 void Game_Events(Game *pGame)
 {
-	(void)pGame;
+	if (IsWindowResized())
+	{
+		Simulation_Resize(&pGame->sim);
+	}
+
+	Simulation_Click(&pGame->sim);
 }
 
 void Game_Update(Game *pGame)
 {
 	double delta = GetFrameTime();
-	Grid_Update(&pGame->sim, delta);
+	Simulation_Update(&pGame->sim, delta);
 }
 
 void Game_Draw(Game *pGame)
 {
 	BeginDrawing();
 
-	ClearBackground(RAYWHITE);
-
-	Grid_Render(&pGame->sim);
-
-	DrawFPS(0, 0);
+	Simulation_Draw(&pGame->sim);
 
 	EndDrawing();
 }
 
 void Game_Close(Game *pGame)
 {
-	Grid_Free(&pGame->sim);
+	Simulation_Free(&pGame->sim);
 }

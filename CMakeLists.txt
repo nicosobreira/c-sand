@@ -4,7 +4,7 @@ project(sand
   LANGUAGES C
 )
 
-find_package(raylib 5.5 REQUIRED)
+add_subdirectory(vendor/raylib)
 
 # Compiler flags and properties
 add_library(compiler_flags INTERFACE)
@@ -19,13 +19,17 @@ target_sources(app PRIVATE ${APP_SOURCES})
 
 target_include_directories(app PRIVATE src)
 
-target_link_libraries(app compiler_flags raylib)
+target_link_libraries(app
+    compiler_flags
+    raylib
+    m
+)
 
 # Checks if OSX and links appropriate frameworks (only required on MacOS)
 if (APPLE)
-    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    target_link_libraries(app "-framework IOKit")
+    target_link_libraries(app "-framework Cocoa")
+    target_link_libraries(app "-framework OpenGL")
 endif()
 
 set(DEBUG_FLAGS

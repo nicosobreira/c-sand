@@ -12,19 +12,19 @@ typedef struct Grid
 	CellType *current;
 	CellType *next;
 
-	/// The number of cells allocated of current and next array
+	/// The number of cells allocated of current and next array.
+	/// Equals to (width * height)
 	size_t totalCells;
 
 	int width;
 	int height;
-	int cellSize;
 } Grid;
 
-void Grid_Init(Grid *pGrid, int width, int height, int cellSize);
-
-void Grid_Render(Grid *pGrid);
+void Grid_Init(Grid *pGrid, int width, int height);
 
 void Grid_Update(Grid *pGrid, double delta);
+
+void Grid_Draw(Grid *pGrid, CellsColors *pColors, Rectangle *pView, int cellSize);
 
 void Grid_Free(Grid *pGrid);
 

@@ -14,6 +14,7 @@ in
     strictDeps = true;
     # Tools
     nativeBuildInputs = with pkgs; [
+      git
       clang-tools
       cmake-language-server
       cmake

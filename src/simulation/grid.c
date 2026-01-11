@@ -3,13 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "raylib.h"
-
-int Grid_GetIndex(int j, int i, int width)
-{
-	return j * width + i;
-}
-
 static void swapBuffers(CellType **current, CellType **next)
 {
 	CellType *temp = *current;
@@ -18,16 +11,13 @@ static void swapBuffers(CellType **current, CellType **next)
 	*next = temp;
 }
 
-void Grid_Init(Grid *pGrid, int width, int height, int cellSize)
+void Grid_Init(Grid *pGrid, int width, int height)
 {
 	memset(pGrid, 0, sizeof(Grid));
-
-	Clock_Set(&pGrid->physicsClock, cellSize / (double)width);
 
 	// TODO: This shouldn't be hard coded
 	pGrid->width = width;
 	pGrid->height = height;
-	pGrid->cellSize = cellSize;
 
 	pGrid->totalCells = (size_t)(pGrid->width * pGrid->height);
 
@@ -44,7 +34,11 @@ void Grid_Init(Grid *pGrid, int width, int height, int cellSize)
 		exit(EXIT_FAILURE);
 	}
 
-	SetRandomSeed(10);
+	const double newTime = 0.04;
+
+	Clock_Set(&pGrid->physicsClock, newTime);
+
+	SetRandomSeed((unsigned int)GetTime() * 1000);
 
 	for (int i = 0; i < pGrid->width; ++i)
 	{
@@ -56,10 +50,7 @@ void Grid_Init(Grid *pGrid, int width, int height, int cellSize)
 			if (random == 0)
 			{
 				pGrid->current[index] = CELL_SAND;
-				continue;
 			}
-
-			pGrid->current[index] = CELL_EMPTY;
 		}
 	}
 }
@@ -73,9 +64,9 @@ void Grid_Update(Grid *pGrid, double delta)
 	memcpy(pGrid->next, pGrid->current, sizeof(CellType) * pGrid->totalCells);
 
 	// Because the sand is falling the loop has to start from the bottom
-	for (int j = pGrid->height - 1; j >= 0; j--)
+	for (int j = 0; j < pGrid->height; ++j)
 	{
-		for (int i = pGrid->width - 1; i >= 0; i--)
+		for (int i = 0; i < pGrid->width; ++i)
 		{
 			int index = Grid_GetIndex(j, i, pGrid->width);
 
@@ -85,7 +76,7 @@ void Grid_Update(Grid *pGrid, double delta)
 			}
 
 			/// Remember: It is zero indexed
-			const int maxIndex = pGrid->width * pGrid->height - 1;
+			int maxIndex = (int)pGrid->totalCells - 1;
 
 			// Sand cannot fall
 			int indexBellow = index + pGrid->width;
@@ -108,42 +99,18 @@ void Grid_Update(Grid *pGrid, double delta)
 	swapBuffers(&pGrid->current, &pGrid->next);
 }
 
-void Grid_Render(Grid *pGrid)
+void Grid_Draw(Grid *pGrid, CellsColors *pColors, Rectangle *pView, int cellSize)
 {
-	const int offset = 20;
-
-	const Color ColorBackground = {
-	    .a = 255,
-	    .r = 30,
-	    .g = 30,
-	    .b = 46,
-	};
-
-	const Color ColorSand = {
-	    .a = 255,
-	    .r = 249,
-	    .g = 226,
-	    .b = 175,
-	};
-
-	// clang-format off
-	DrawRectangle(
-		offset,
-		offset,
-		(pGrid->width - 1) * pGrid->cellSize + offset,
-		(pGrid->height - 1) * pGrid->cellSize + offset,
-		ColorBackground
-	);
-	// clang-format on
+	DrawRectangleRec(*pView, pColors->empty);
 
 	int xPositions[pGrid->width];
 	int yPositions[pGrid->height];
 
 	for (int i = 0; i < pGrid->width; i++)
-		xPositions[i] = i * pGrid->cellSize + offset;
+		xPositions[i] = i * cellSize + (int)pView->x;
 
 	for (int j = 0; j < pGrid->height; j++)
-		yPositions[j] = j * pGrid->cellSize + offset;
+		yPositions[j] = j * cellSize + (int)pView->y;
 
 	for (int i = 0; i < pGrid->width; ++i)
 	{
@@ -153,7 +120,7 @@ void Grid_Render(Grid *pGrid)
 
 			if (pGrid->current[index] == CELL_SAND)
 			{
-				DrawRectangle(xPositions[i], yPositions[j], pGrid->cellSize, pGrid->cellSize, ColorSand);
+				DrawRectangle(xPositions[i], yPositions[j], cellSize, cellSize, pColors->sand);
 			}
 		}
 	}
@@ -165,4 +132,9 @@ void Grid_Free(Grid *pGrid)
 	MemFree(pGrid->next);
 
 	memset(pGrid, 0, sizeof(Grid));
+}
+
+int Grid_GetIndex(int j, int i, int width)
+{
+	return j * width + i;
 }
