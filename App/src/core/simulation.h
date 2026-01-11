@@ -2,8 +2,8 @@
 
 #include "raylib.h"
 
-#include "simulation/grid.h"
-#include "ui/theme.h"
+#include "core/grid.h"
+#include "core/theme.h"
 
 typedef struct Simulation
 {

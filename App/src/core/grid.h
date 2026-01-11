@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "simulation/cell.h"
+#include "core/cell.h"
 #include "utils/clock.h"
 
 typedef struct Grid

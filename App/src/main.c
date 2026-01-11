@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 
-#include "simulation/simulation.h"
+#include "core/simulation.h"
 
 typedef struct Game
 {

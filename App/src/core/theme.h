@@ -1,6 +1,6 @@
 #pragma once
 
-#include "simulation/cell.h"
+#include "core/cell.h"
 
 typedef struct Theme
 {
