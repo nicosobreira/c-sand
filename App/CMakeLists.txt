@@ -9,9 +9,20 @@ target_sources(app PRIVATE ${APP_SOURCES})
 target_include_directories(app PRIVATE src)
 
 target_link_libraries(app
-    compiler_flags
+  PRIVATE
+    project_flags
     raylib
-    ui
+    clay
     m
 )
 
+# target_compile_options(app PRIVATE
+#   -Wall
+#   -Wextra
+#   -pedantic
+#   -Wpedantic
+#   -Wshadow
+#   -Wconversion
+#   -Wformat=2
+#   -Werror
+# )

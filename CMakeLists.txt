@@ -4,14 +4,14 @@ project(sand
   LANGUAGES C
 )
 
+# Compiler flags and properties
+add_library(project_flags INTERFACE)
+
 add_subdirectory(vendor/raylib)
 
-add_subdirectory(Ui)
+add_subdirectory(vendor/clay)
 
 add_subdirectory(App)
-
-# Compiler flags and properties
-add_library(compiler_flags INTERFACE)
 
 # Checks if OSX and links appropriate frameworks (only required on MacOS)
 if (APPLE)
@@ -22,12 +22,6 @@ endif()
 
 set(DEBUG_FLAGS
   -g
-  -pedantic
-  -Wpedantic
-  -Wshadow
-  -Wconversion
-  -Wformat=2
-  -Werror
   -DDEBUG
 )
 
@@ -44,19 +38,15 @@ set(RELWITHDEFINFO_FLAGS
 )
 
 if (MSVC)
-  target_compile_options(compiler_flags INTERFACE /W4)
+  target_compile_options(project_flags INTERFACE /W4)
 else()
-  target_compile_options(compiler_flags INTERFACE
-	-Wall
-	-Wextra
+  target_compile_options(project_flags INTERFACE
 	$<$<CONFIG:Debug>:${DEBUG_FLAGS}>
 	$<$<CONFIG:Release>:${RELEASE_FLAGS}>
     $<$<CONFIG:RelWithDebInfo>:${RELWITHDEBINFO_FLAGS}>
   )
+
 endif()
 
-set_target_properties(compiler_flags PROPERTIES
-  C_STANDARD 11
-  C_STANDARD_REQUIRED ON
-)
+target_compile_features(project_flags INTERFACE c_std_11)
 
