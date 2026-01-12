@@ -7,9 +7,9 @@ project(sand
 # Compiler flags and properties
 add_library(project_flags INTERFACE)
 
-add_subdirectory(vendor/raylib)
+add_subdirectory(Vendor/Raylib)
 
-add_subdirectory(vendor/clay)
+add_subdirectory(Vendor/Clay)
 
 add_subdirectory(App)
 
