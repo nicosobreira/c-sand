@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "core/elements/cache.h"
+#include "sim/elements/table.h"
 
-static void swapBuffers(ElementId **current, ElementId **next)
+static inline void swapBuffers(ElementId **current, ElementId **next)
 {
 	ElementId *temp = *current;
 
@@ -13,7 +13,7 @@ static void swapBuffers(ElementId **current, ElementId **next)
 	*next = temp;
 }
 
-static void handleElementTotal(void)
+static void handleError(void)
 {
 	TraceLog(LOG_ERROR, "Out of memory!");
 	CloseWindow();
@@ -32,12 +32,14 @@ void Grid_Init(Grid *pGrid, int width, int height)
 	pGrid->current = MemAlloc((unsigned int)(sizeof(ElementId) * pGrid->totalCells));
 	pGrid->next = MemAlloc((unsigned int)(sizeof(ElementId) * pGrid->totalCells));
 
+	pGrid->updatedIndexes = MemAlloc((unsigned int)(sizeof(int) * pGrid->totalCells));
+
 	memset(pGrid->current, ELEMENT_EMPTY, sizeof(ElementId) * pGrid->totalCells);
 	memset(pGrid->next, ELEMENT_EMPTY, sizeof(ElementId) * pGrid->totalCells);
 
 	if (pGrid->current == NULL || pGrid->next == NULL)
 	{
-		handleElementTotal();
+		handleError();
 	}
 
 	const double newTime = 0.04;
@@ -46,6 +48,7 @@ void Grid_Init(Grid *pGrid, int width, int height)
 
 	SetRandomSeed((unsigned int)GetTime() * 1000);
 
+	// Default value
 	for (int i = 0; i < pGrid->totalCells; ++i)
 	{
 		int random = GetRandomValue(0, 9);
@@ -64,6 +67,8 @@ void Grid_Update(Grid *pGrid, double delta)
 	// Copy current state into next
 	memcpy(pGrid->next, pGrid->current, sizeof(ElementId) * pGrid->totalCells);
 
+	pGrid->updatedCurrentSize = 0;
+
 	for (int i = 0; i < pGrid->totalCells; ++i)
 	{
 		if (pGrid->current[i] == ELEMENT_EMPTY)
@@ -73,35 +78,6 @@ void Grid_Update(Grid *pGrid, double delta)
 	}
 
 	swapBuffers(&pGrid->current, &pGrid->next);
-}
-
-void Grid_Draw(Grid *pGrid, Theme *pTheme, Rectangle *pView, int cellSize, GridRenderCache *pCache)
-{
-	Color elementColors[ELEMENT_TOTAL];
-	for (int e = 0; e < ELEMENT_TOTAL; ++e)
-		elementColors[e] = pTheme->elements[e].color;
-
-	DrawRectangleRec(*pView, elementColors[ELEMENT_EMPTY]);
-
-	for (int j = 0; j < pGrid->height; ++j)
-	{
-		int row = j * pGrid->width;
-
-		for (int i = 0; i < pGrid->width; ++i)
-		{
-			ElementId e = pGrid->current[row + i];
-			/*
-			if (e == ELEMENT_EMPTY)
-			    continue;
-		   */
-
-			pCache->pixels[row + i] = elementColors[e];
-		}
-	}
-	UpdateTexture(pCache->texture, pCache->pixels);
-
-	// 4️⃣ Draw texture ONCE (scaled)
-	DrawTextureEx(pCache->texture, (Vector2){pView->x, pView->y}, 0.0f, (float)cellSize, WHITE);
 }
 
 void Grid_Free(Grid *pGrid)

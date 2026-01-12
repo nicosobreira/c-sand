@@ -2,9 +2,9 @@
 
 #include <stddef.h>
 
-#include "core/grid.h"
+#include "sim/grid.h"
 
-void update_Empty(const Grid *pGrid, size_t index)
+void update_Empty(Grid *pGrid, int index)
 {
 	(void)pGrid;
 	(void)index;

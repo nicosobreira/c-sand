@@ -1,6 +1,8 @@
-#include "grid_cache.h"
+#include "cache.h"
 
 #include <stddef.h>
+
+#include "raylib.h"
 
 void GridRenderCache_Init(GridRenderCache *cache, int width, int height)
 {

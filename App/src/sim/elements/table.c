@@ -1,4 +1,4 @@
-#include "cache.h"
+#include "table.h"
 
 #include "id.h"
 #include "template.h"

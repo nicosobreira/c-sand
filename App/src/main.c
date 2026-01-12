@@ -4,7 +4,9 @@
 #include "clay.h"
 #include "raylib.h"
 
-#include "core/simulation.h"
+#include "sim/simulation.h"
+
+// TODO: Implement grid.updatedIndexes on Renderer
 
 typedef struct Game
 {
@@ -111,9 +113,11 @@ void Game_Draw(Game *pGame)
 		Simulation_Resize(&pGame->sim);
 	}
 
+	Rectangle *pView = &pGame->sim.gridRenderer.viewPort;
+
 	const Clay_Dimensions dimensions = {
-	    pGame->sim.viewPort.width + pGame->sim.viewPort.x,
-	    pGame->sim.viewPort.height + pGame->sim.viewPort.y,
+	    pView->width + pView->x,
+	    pView->height + pView->y,
 	};
 
 	Clay_SetLayoutDimensions(dimensions);
