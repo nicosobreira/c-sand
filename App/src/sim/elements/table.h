@@ -5,9 +5,15 @@
 #include "id.h"
 #include "template.h"
 
-extern const ElementUpdate g_ElementUpdate[ELEMENT_TOTAL];
+#include "sim/grid.h"
 
 extern const ElementMetadata g_ElementTable[ELEMENT_TOTAL];
+
+static inline void ElementTable_Update(Grid *pGrid, int index)
+{
+	const ElementId id = pGrid->current[index];
+	g_ElementTable[id].updateFunc(pGrid, index);
+}
 
 /** Get ElementMetadata info
  * @param id Unkown ElementId (does not check)

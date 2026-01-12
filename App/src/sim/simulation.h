@@ -9,6 +9,7 @@ typedef struct Simulation
 	GridRenderer gridRenderer;
 	Grid grid;
 	Theme theme;
+	ElementId currentId;
 } Simulation;
 
 void Simulation_Init(Simulation *pSim);
@@ -18,6 +19,8 @@ void Simulation_Free(Simulation *pSim);
 void Simulation_Update(Simulation *pSim, double delta);
 
 void Simulation_Draw(Simulation *pSim);
+
+void Simlation_Keyboard(Simulation *pSim);
 
 void Simulation_Click(Simulation *pSim);
 

@@ -5,13 +5,9 @@
 
 #include "update/empty.h"
 #include "update/sand.h"
+#include "update/water.h"
 
 // clang-format off
-const ElementUpdate g_ElementUpdate[ELEMENT_TOTAL] = {
-	[ELEMENT_EMPTY] = update_Empty,
-	[ELEMENT_SAND] = update_Sand,
-};
-
 const ElementMetadata g_ElementTable[ELEMENT_TOTAL] =
 	{
 		[ELEMENT_EMPTY] =
@@ -25,6 +21,12 @@ const ElementMetadata g_ElementTable[ELEMENT_TOTAL] =
 			.name = "Sand",
 			.updateFunc = update_Sand,
 			.displaceability = 50,
+		},
+		[ELEMENT_WATER] =
+		{
+			.name = "Water",
+			.updateFunc = update_Water,
+			.displaceability = 55,
 		},
 	};
 // clang-format on

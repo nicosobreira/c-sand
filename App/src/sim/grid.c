@@ -74,7 +74,7 @@ void Grid_Update(Grid *pGrid, double delta)
 		if (pGrid->current[i] == ELEMENT_EMPTY)
 			continue;
 
-		g_ElementUpdate[pGrid->current[i]](pGrid, i);
+		ElementTable_Update(pGrid, i);
 	}
 
 	swapBuffers(&pGrid->current, &pGrid->next);

@@ -37,24 +37,29 @@ void Grid_Update(Grid *pGrid, double delta);
 
 void Grid_Free(Grid *pGrid);
 
-static inline void Grid_UpdatedIndexesAdd(Grid *pGrid, int index)
-{
-	assert(pGrid->updatedCurrentSize + 1 < pGrid->totalCells);
-
-	pGrid->updatedCurrentSize++;
-	pGrid->updatedIndexes[pGrid->updatedCurrentSize] = index;
-}
-
 /// Converts a 2D grid coordinate to a 1D array
 static inline int Grid_GetIndex(int j, int i, int width)
 {
 	return j * width + i;
 }
 
-static inline bool Grid_IsIndexValid(const Grid *pGrid, int i)
+static inline bool Grid_IsIndexValid(Grid *pGrid, int i)
 {
 	if (i >= 0 && i < pGrid->totalCells)
 		return true;
 
 	return false;
+}
+static inline void Grid_UpdatedIndexesAdd(Grid *pGrid, int index)
+{
+	assert(Grid_IsIndexValid(pGrid, pGrid->updatedCurrentSize + 1));
+
+	pGrid->updatedCurrentSize++;
+	pGrid->updatedIndexes[pGrid->updatedCurrentSize] = index;
+}
+
+static inline void Grid_UpdateIndex(Grid *pGrid, int index, ElementId id)
+{
+	Grid_UpdatedIndexesAdd(pGrid, index);
+	pGrid->next[index] = id;
 }

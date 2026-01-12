@@ -1,10 +1,12 @@
-#include "sand.h"
+#include "water.h"
 
 #include "sim/grid.h"
 
 #include "sim/elements/update_utils.h"
 
-void update_Sand(Grid *pGrid, int index)
+// FIX: Water don't form pools
+
+void update_Water(Grid *pGrid, int index)
 {
 	int target = 0;
 
@@ -22,6 +24,14 @@ void update_Sand(Grid *pGrid, int index)
 	{
 		target = indexBellow - 1;
 	}
+	else if (isElementMoveValid(pGrid, index, index + 1)) // Right
+	{
+		target = index + 1;
+	}
+	else if (isElementMoveValid(pGrid, index, index - 1)) // Left
+	{
+		target = index - 1;
+	}
 	else
 	{
 		return;
@@ -29,5 +39,5 @@ void update_Sand(Grid *pGrid, int index)
 
 	Grid_UpdateIndex(pGrid, index, ELEMENT_EMPTY);
 
-	Grid_UpdateIndex(pGrid, target, ELEMENT_SAND);
+	Grid_UpdateIndex(pGrid, target, ELEMENT_WATER);
 }

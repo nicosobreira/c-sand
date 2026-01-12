@@ -2,8 +2,6 @@
 
 #include <stdbool.h>
 
-#include "table.h"
-
 #include "sim/grid.h"
 
 /** Check if the index bellow is valid
@@ -13,4 +11,4 @@
  * @param target Unkown cell index
  * @return True if move is valid, otherwise False
  */
-bool isElementMoveValid(const Grid *pGrid, int current, int target);
+bool isElementMoveValid(Grid *pGrid, int current, int target);

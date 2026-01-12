@@ -17,8 +17,8 @@ void Simulation_Init(Simulation *pSim)
 {
 	memset(pSim, 0, sizeof(Simulation));
 
-	const int defaultWidth = 1024 / 2;
-	const int defaultHeight = 560 / 2;
+	const int defaultWidth = 512;
+	const int defaultHeight = 280;
 
 	Grid_Init(&pSim->grid, defaultWidth, defaultHeight);
 
@@ -102,18 +102,20 @@ void Simulation_Draw(Simulation *pSim)
 	DrawFPS(0, 0);
 }
 
-static bool isVectorInsideRectangle(Vector2 *pVec, Rectangle *pRect)
+void Simlation_Keyboard(Simulation *pSim)
 {
-	float finalX = pRect->width + pRect->x;
-	float finalY = pRect->height + pRect->y;
-
-	if (pVec->x < pRect->x || pVec->x > finalX)
-		return false;
-
-	if (pVec->y < pRect->y || pVec->y > finalY)
-		return false;
-
-	return true;
+	if (IsKeyPressed(KEY_ONE))
+	{
+		pSim->currentId = ELEMENT_SAND;
+	}
+	else if (IsKeyPressed(KEY_TWO))
+	{
+		pSim->currentId = ELEMENT_WATER;
+	}
+	else if (IsKeyPressed(KEY_ZERO))
+	{
+		pSim->currentId = ELEMENT_EMPTY;
+	}
 }
 
 void Simulation_Click(Simulation *pSim)
@@ -126,7 +128,7 @@ void Simulation_Click(Simulation *pSim)
 
 	Vector2 mouse = GetMousePosition();
 
-	if (!isVectorInsideRectangle(&mouse, pView))
+	if (!CheckCollisionPointRec(mouse, *pView))
 		return;
 
 	Vector2 mouseInView = Vector2Subtract(mouse, (Vector2){pView->x, pView->y});
@@ -139,5 +141,5 @@ void Simulation_Click(Simulation *pSim)
 
 	int index = Grid_GetIndex((int)mouseInView.y, (int)mouseInView.x, pSim->grid.width);
 
-	pSim->grid.current[index] = ELEMENT_SAND;
+	pSim->grid.current[index] = pSim->currentId;
 }

@@ -97,6 +97,7 @@ void Game_Init(Game *pGame)
 
 void Game_Events(Game *pGame)
 {
+	Simlation_Keyboard(&pGame->sim);
 	Simulation_Click(&pGame->sim);
 }
 

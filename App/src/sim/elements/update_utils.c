@@ -1,6 +1,8 @@
 #include "update_utils.h"
 
-bool isElementMoveValid(const Grid *pGrid, int current, int target)
+#include "table.h"
+
+bool isElementMoveValid(Grid *pGrid, int current, int target)
 {
 	if (!Grid_IsIndexValid(pGrid, target))
 		return false;
