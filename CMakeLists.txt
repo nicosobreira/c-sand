@@ -13,13 +13,6 @@ add_subdirectory(vendor/clay)
 
 add_subdirectory(App)
 
-# Checks if OSX and links appropriate frameworks (only required on MacOS)
-if (APPLE)
-    target_link_libraries(app "-framework IOKit")
-    target_link_libraries(app "-framework Cocoa")
-    target_link_libraries(app "-framework OpenGL")
-endif()
-
 set(DEBUG_FLAGS
   -g
   -DDEBUG
@@ -45,7 +38,6 @@ else()
 	$<$<CONFIG:Release>:${RELEASE_FLAGS}>
     $<$<CONFIG:RelWithDebInfo>:${RELWITHDEBINFO_FLAGS}>
   )
-
 endif()
 
 target_compile_features(project_flags INTERFACE c_std_11)

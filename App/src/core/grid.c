@@ -3,35 +3,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void swapBuffers(CellType **current, CellType **next)
+#include "core/elements/cache.h"
+
+static void swapBuffers(ElementId **current, ElementId **next)
 {
-	CellType *temp = *current;
+	ElementId *temp = *current;
 
 	*current = *next;
 	*next = temp;
+}
+
+static void handleElementTotal(void)
+{
+	TraceLog(LOG_ERROR, "Out of memory!");
+	CloseWindow();
+	exit(EXIT_FAILURE);
 }
 
 void Grid_Init(Grid *pGrid, int width, int height)
 {
 	memset(pGrid, 0, sizeof(Grid));
 
-	// TODO: This shouldn't be hard coded
 	pGrid->width = width;
 	pGrid->height = height;
 
 	pGrid->totalCells = (size_t)(pGrid->width * pGrid->height);
 
-	pGrid->current = MemAlloc((unsigned int)(sizeof(CellType) * pGrid->totalCells));
-	pGrid->next = MemAlloc((unsigned int)(sizeof(CellType) * pGrid->totalCells));
+	pGrid->current = MemAlloc((unsigned int)(sizeof(ElementId) * pGrid->totalCells));
+	pGrid->next = MemAlloc((unsigned int)(sizeof(ElementId) * pGrid->totalCells));
 
-	memset(pGrid->current, CELL_EMPTY, sizeof(CellType) * pGrid->totalCells);
-	memset(pGrid->next, CELL_EMPTY, sizeof(CellType) * pGrid->totalCells);
+	memset(pGrid->current, ELEMENT_EMPTY, sizeof(ElementId) * pGrid->totalCells);
+	memset(pGrid->next, ELEMENT_EMPTY, sizeof(ElementId) * pGrid->totalCells);
 
 	if (pGrid->current == NULL || pGrid->next == NULL)
 	{
-		TraceLog(LOG_ERROR, "Out of memory!");
-		CloseWindow();
-		exit(EXIT_FAILURE);
+		handleElementTotal();
 	}
 
 	const double newTime = 0.04;
@@ -40,17 +46,12 @@ void Grid_Init(Grid *pGrid, int width, int height)
 
 	SetRandomSeed((unsigned int)GetTime() * 1000);
 
-	for (int i = 0; i < pGrid->width; ++i)
+	for (int i = 0; i < pGrid->totalCells; ++i)
 	{
-		for (int j = 0; j < pGrid->height; ++j)
+		int random = GetRandomValue(0, 9);
+		if (random == 0)
 		{
-			int index = Grid_GetIndex(j, i, pGrid->width);
-
-			int random = GetRandomValue(0, 9);
-			if (random == 0)
-			{
-				pGrid->current[index] = CELL_SAND;
-			}
+			pGrid->current[i] = ELEMENT_SAND;
 		}
 	}
 }
@@ -61,69 +62,46 @@ void Grid_Update(Grid *pGrid, double delta)
 		return;
 
 	// Copy current state into next
-	memcpy(pGrid->next, pGrid->current, sizeof(CellType) * pGrid->totalCells);
+	memcpy(pGrid->next, pGrid->current, sizeof(ElementId) * pGrid->totalCells);
 
-	// Because the sand is falling the loop has to start from the bottom
-	for (int j = 0; j < pGrid->height; ++j)
+	for (int i = 0; i < pGrid->totalCells; ++i)
 	{
-		for (int i = 0; i < pGrid->width; ++i)
-		{
-			int index = Grid_GetIndex(j, i, pGrid->width);
+		if (pGrid->current[i] == ELEMENT_EMPTY)
+			continue;
 
-			if (pGrid->current[index] == CELL_EMPTY)
-			{
-				continue;
-			}
-
-			/// Remember: It is zero indexed
-			int maxIndex = (int)pGrid->totalCells - 1;
-
-			// Sand cannot fall
-			int indexBellow = index + pGrid->width;
-
-			if (indexBellow > maxIndex)
-			{
-				continue;
-			}
-
-			if (pGrid->current[indexBellow] != CELL_EMPTY)
-			{
-				continue;
-			}
-
-			pGrid->next[index] = CELL_EMPTY;
-			pGrid->next[indexBellow] = CELL_SAND;
-		}
+		g_ElementUpdate[pGrid->current[i]](pGrid, i);
 	}
 
 	swapBuffers(&pGrid->current, &pGrid->next);
 }
 
-void Grid_Draw(Grid *pGrid, CellsColors *pColors, Rectangle *pView, int cellSize)
+void Grid_Draw(Grid *pGrid, Theme *pTheme, Rectangle *pView, int cellSize, GridRenderCache *pCache)
 {
-	DrawRectangleRec(*pView, pColors->empty);
+	Color elementColors[ELEMENT_TOTAL];
+	for (int e = 0; e < ELEMENT_TOTAL; ++e)
+		elementColors[e] = pTheme->elements[e].color;
 
-	int xPositions[pGrid->width];
-	int yPositions[pGrid->height];
+	DrawRectangleRec(*pView, elementColors[ELEMENT_EMPTY]);
 
-	for (int i = 0; i < pGrid->width; i++)
-		xPositions[i] = i * cellSize + (int)pView->x;
-
-	for (int j = 0; j < pGrid->height; j++)
-		yPositions[j] = j * cellSize + (int)pView->y;
-
-	for (int i = 0; i < pGrid->width; ++i)
+	for (int j = 0; j < pGrid->height; ++j)
 	{
-		for (int j = 0; j < pGrid->height; ++j)
-		{
-			int index = Grid_GetIndex(j, i, pGrid->width);
+		int row = j * pGrid->width;
 
-			if (pGrid->current[index] == CELL_SAND)
-			{
-				DrawRectangle(xPositions[i], yPositions[j], cellSize, cellSize, pColors->sand);
-			}
+		for (int i = 0; i < pGrid->width; ++i)
+		{
+			ElementId e = pGrid->current[row + i];
+			/*
+			if (e == ELEMENT_EMPTY)
+			    continue;
+		   */
+
+			pCache->pixels[row + i] = elementColors[e];
 		}
 	}
+	UpdateTexture(pCache->texture, pCache->pixels);
+
+	// 4️⃣ Draw texture ONCE (scaled)
+	DrawTextureEx(pCache->texture, (Vector2){pView->x, pView->y}, 0.0f, (float)cellSize, WHITE);
 }
 
 void Grid_Free(Grid *pGrid)
@@ -132,9 +110,4 @@ void Grid_Free(Grid *pGrid)
 	MemFree(pGrid->next);
 
 	memset(pGrid, 0, sizeof(Grid));
-}
-
-int Grid_GetIndex(int j, int i, int width)
-{
-	return j * width + i;
 }

@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "clay.h"
 #include "raylib.h"
 
 #include "core/simulation.h"
@@ -8,7 +9,6 @@
 typedef struct Game
 {
 	Simulation sim;
-	Font fonts[1];
 	int fps;
 	int windowWidth;
 	int windowHeight;
@@ -21,13 +21,10 @@ void Game_Events(Game *pGame);
 void Game_Draw(Game *pGame);
 void Game_Close(Game *pGame);
 
-// TODO: Create a `Simulation` struct that takes care of user interaction and
-// view of a `Grid` (probably using **Camera2D**)
-
 static void initRaylib(void)
 {
-	const int windowWidth = 800;
-	const int windowHeight = 450;
+	const int windowWidth = 1024;
+	const int windowHeight = 560;
 	const int fps = 60;
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -37,9 +34,34 @@ static void initRaylib(void)
 	SetTraceLogLevel(LOG_DEBUG);
 }
 
+static void HandleClayErrors(Clay_ErrorData errorData)
+{
+	TraceLog(LOG_ERROR, "%s", errorData.errorText.chars);
+	CloseWindow();
+	exit(EXIT_FAILURE);
+}
+
+static Clay_Dimensions MeasureTextClay(Clay_StringSlice text, Clay_TextElementConfig *config, void *userData)
+{
+	return (Clay_Dimensions){.width = MeasureText(text.chars, config->fontSize), .height = config->fontSize};
+}
+
+static void initClay(void)
+{
+	uint64_t totalMemorySize = Clay_MinMemorySize();
+	Clay_Arena arena = Clay_CreateArenaWithCapacityAndMemory(totalMemorySize, malloc(totalMemorySize));
+
+	Clay_Initialize(
+	    arena, (Clay_Dimensions){GetScreenWidth(), GetScreenHeight()}, (Clay_ErrorHandler){HandleClayErrors}
+	);
+
+	Clay_SetMeasureTextFunction(MeasureTextClay, 0);
+}
+
 int main(void)
 {
 	initRaylib();
+	initClay();
 
 	Game game;
 
@@ -73,11 +95,6 @@ void Game_Init(Game *pGame)
 
 void Game_Events(Game *pGame)
 {
-	if (IsWindowResized())
-	{
-		Simulation_Resize(&pGame->sim);
-	}
-
 	Simulation_Click(&pGame->sim);
 }
 
@@ -89,6 +106,19 @@ void Game_Update(Game *pGame)
 
 void Game_Draw(Game *pGame)
 {
+	if (IsWindowResized())
+	{
+		Simulation_Resize(&pGame->sim);
+	}
+
+	const Clay_Dimensions dimensions = {
+	    pGame->sim.viewPort.width + pGame->sim.viewPort.x,
+	    pGame->sim.viewPort.height + pGame->sim.viewPort.y,
+	};
+
+	Clay_SetLayoutDimensions(dimensions);
+	Clay_SetPointerState((Clay_Vector2){GetMouseX(), GetMouseY()}, IsMouseButtonDown(0));
+
 	BeginDrawing();
 
 	Simulation_Draw(&pGame->sim);

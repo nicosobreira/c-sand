@@ -3,14 +3,16 @@
 #include "raylib.h"
 
 #include "core/grid.h"
-#include "core/theme.h"
+#include "core/grid_cache.h"
+#include "ui/theme.h"
 
 typedef struct Simulation
 {
 	Grid grid;
+	GridRenderCache gridCache;
 	Camera2D camera;
-	Rectangle viewPort;
 	Theme theme;
+	Rectangle viewPort;
 	int cellSize;
 } Simulation;
 

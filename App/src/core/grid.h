@@ -2,15 +2,19 @@
 
 #include <stddef.h>
 
-#include "core/cell.h"
+#include "raylib.h"
+
+#include "core/elements/id.h"
+#include "core/grid_cache.h"
+#include "ui/theme.h"
 #include "utils/clock.h"
 
 typedef struct Grid
 {
 	Clock physicsClock;
 
-	CellType *current;
-	CellType *next;
+	ElementId *current;
+	ElementId *next;
 
 	/// The number of cells allocated of current and next array.
 	/// Equals to (width * height)
@@ -24,11 +28,12 @@ void Grid_Init(Grid *pGrid, int width, int height);
 
 void Grid_Update(Grid *pGrid, double delta);
 
-void Grid_Draw(Grid *pGrid, CellsColors *pColors, Rectangle *pView, int cellSize);
+void Grid_Draw(Grid *pGrid, Theme *pTheme, Rectangle *pView, int cellSize, GridRenderCache *pCache);
 
 void Grid_Free(Grid *pGrid);
 
-/* Converts a 2D grid coordinate to a 1D array
- * @return the converted index
- */
-int Grid_GetIndex(int j, int i, int width);
+/// Converts a 2D grid coordinate to a 1D array
+static inline int Grid_GetIndex(int j, int i, int width)
+{
+	return j * width + i;
+}

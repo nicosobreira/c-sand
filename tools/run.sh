@@ -46,9 +46,11 @@ MODE="${1-}"
 
 case "$MODE" in
 	profile | p)
+		echo -e "\tProfile\n"
 		run_profile
 		;;
 	debug | d)
+		echo -e "\tDebug\n"
 		run_debug
 		;;
 	run | r)

@@ -1,8 +1,34 @@
 BasedOnStyle: Microsoft
+Language: C
 IndentWidth: 4
+ContinuationIndentWidth: 4
 TabWidth: 4
 
 # My style
 UseTab: ForIndentation
 PointerAlignment: Right
+
+# For Clay
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterControlStatement: true
+  AfterStruct: true
+  AfterEnum: true
+  AfterUnion: true
+
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: BlockIndent
+PenaltyBreakAssignment: 1
+PenaltyBreakBeforeFirstCallParameter: 1
+
+Cpp11BracedListStyle: true
+
+StatementMacros:
+  - CLAY
 
