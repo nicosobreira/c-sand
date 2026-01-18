@@ -1,6 +1,8 @@
 #include "cache.h"
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "raylib.h"
 
@@ -9,7 +11,9 @@ void GridRenderCache_Init(GridRenderCache *cache, int width, int height)
 	cache->width = width;
 	cache->height = height;
 
-	cache->pixels = MemAlloc((unsigned int)(width * height * sizeof(Color)));
+	cache->totalPixels = width * height;
+
+	cache->pixels = malloc((size_t)(cache->totalPixels * sizeof(Color)));
 
 	Image image = {
 	    .data = cache->pixels,
@@ -25,6 +29,7 @@ void GridRenderCache_Init(GridRenderCache *cache, int width, int height)
 void GridRenderCache_Free(GridRenderCache *cache)
 {
 	UnloadTexture(cache->texture);
-	MemFree(cache->pixels);
-	cache->pixels = NULL;
+	free(cache->pixels);
+
+	memset(cache, 0, sizeof(GridRenderCache));
 }

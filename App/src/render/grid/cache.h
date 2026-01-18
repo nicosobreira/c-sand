@@ -1,11 +1,14 @@
 #pragma once
 
+#include <stddef.h>
+
 #include "raylib.h"
 
 typedef struct GridRenderCache
 {
 	Texture2D texture;
 	Color *pixels;
+	size_t totalPixels;
 	int width;
 	int height;
 } GridRenderCache;

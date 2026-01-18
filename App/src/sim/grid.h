@@ -11,21 +11,20 @@ typedef struct Grid
 	Clock physicsClock;
 
 	/// The number of cells allocated of current and next array.
-	/// Equals to (width * height)
+	/// Equals to (width * height).
 	size_t totalCells;
 
-	/// Dynamic memory allocated array for reading grid data
-	/// Has totalCells as capacity;
+	/// Dynamic memory allocated array for reading grid data.
+	/// Has totalCells as capacity.
 	ElementId *current;
 
-	/// Dynamic memory allocated array for updating grid data
-	/// Has totalCells as capacity;
+	/// Dynamic memory allocated array for updating grid data.
+	/// Has totalCells as capacity.
 	ElementId *next;
 
-	/// Dynamic memory allocated array holding only the indexes update
-	/// Has totalCells as capacity;
-	int *updatedIndexes;
-	int updatedCurrentSize;
+	/// Random number between 0 and 100.
+	/// The value is updated on `Grid_Update`.
+	int randomNumber100;
 
 	int width;
 	int height;
@@ -50,16 +49,8 @@ static inline bool Grid_IsIndexValid(Grid *pGrid, int i)
 
 	return false;
 }
-static inline void Grid_UpdatedIndexesAdd(Grid *pGrid, int index)
-{
-	assert(Grid_IsIndexValid(pGrid, pGrid->updatedCurrentSize + 1));
-
-	pGrid->updatedCurrentSize++;
-	pGrid->updatedIndexes[pGrid->updatedCurrentSize] = index;
-}
 
 static inline void Grid_UpdateIndex(Grid *pGrid, int index, ElementId id)
 {
-	Grid_UpdatedIndexesAdd(pGrid, index);
 	pGrid->next[index] = id;
 }

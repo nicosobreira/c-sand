@@ -16,6 +16,7 @@ in
     nativeBuildInputs = with pkgs; [
       git
       cmake
+      gdb
 
       clang-tools
       cmake-language-server

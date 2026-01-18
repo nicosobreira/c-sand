@@ -1,7 +1,5 @@
 #include "water.h"
 
-#include "raylib.h"
-
 #include "sim/grid.h"
 
 #include "sim/elements/update_utils.h"

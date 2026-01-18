@@ -6,8 +6,6 @@
 
 #include "sim/simulation.h"
 
-// TODO: Implement grid.updatedIndexes on Renderer
-
 typedef struct Game
 {
 	Simulation sim;
@@ -22,6 +20,12 @@ void Game_Close(Game *pGame);
 
 static void initRaylib(void)
 {
+#if defined(DEBUG)
+	SetTraceLogLevel(LOG_DEBUG);
+#else
+	SetTraceLogLevel(LOG_ERROR);
+#endif
+
 	const int windowWidth = 1024;
 	const int windowHeight = 560;
 	const int fps = 60;
@@ -29,8 +33,6 @@ static void initRaylib(void)
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(windowWidth, windowHeight, "Sand Simulator");
 	SetTargetFPS(fps);
-
-	SetTraceLogLevel(LOG_DEBUG);
 }
 
 static void HandleClayErrors(Clay_ErrorData errorData)

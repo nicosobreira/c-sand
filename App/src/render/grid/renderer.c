@@ -13,22 +13,10 @@ void GridRenderer_Render(GridRenderer *pRender, Grid *pGrid, Theme *pTheme)
 	Rectangle *pView = &pRender->viewPort;
 	int cellSize = pRender->cellSize;
 
-	Color elementColors[ELEMENT_TOTAL];
-	for (int e = 0; e < ELEMENT_TOTAL; ++e)
-		elementColors[e] = pTheme->elements[e].color;
-
-	DrawRectangleRec(pRender->viewPort, elementColors[ELEMENT_EMPTY]);
-
-	for (int j = 0; j < pGrid->height; ++j)
+	for (size_t i = 0; i < pCache->totalPixels; ++i)
 	{
-		int row = j * pGrid->width;
-
-		for (int i = 0; i < pGrid->width; ++i)
-		{
-			ElementId e = pGrid->current[row + i];
-
-			pCache->pixels[row + i] = elementColors[e];
-		}
+		ElementId e = pGrid->current[i];
+		pCache->pixels[i] = pTheme->elements[e].color;
 	}
 
 	UpdateTexture(pCache->texture, pCache->pixels);
