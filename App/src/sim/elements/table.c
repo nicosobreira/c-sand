@@ -20,13 +20,13 @@ const ElementMetadata g_ElementTable[ELEMENT_TOTAL] =
 		{
 			.name = "Sand",
 			.updateFunc = update_Sand,
-			.displaceability = 50,
+			.displaceability = 10,
 		},
 		[ELEMENT_WATER] =
 		{
 			.name = "Water",
 			.updateFunc = update_Water,
-			.displaceability = 55,
+			.displaceability = 11,
 		},
 	};
 // clang-format on

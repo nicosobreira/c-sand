@@ -46,17 +46,17 @@ void Grid_Init(Grid *pGrid, int width, int height)
 
 	Clock_Set(&pGrid->physicsClock, newTime);
 
-	SetRandomSeed((unsigned int)GetTime() * 1000);
-
 	// Default value
+	/*
 	for (int i = 0; i < pGrid->totalCells; ++i)
 	{
-		int random = GetRandomValue(0, 9);
-		if (random == 0)
-		{
-			pGrid->current[i] = ELEMENT_SAND;
-		}
+	    int random = GetRandomValue(0, 9);
+	    if (random == 0)
+	    {
+	        pGrid->current[i] = ELEMENT_SAND;
+	    }
 	}
+	*/
 }
 
 void Grid_Update(Grid *pGrid, double delta)

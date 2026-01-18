@@ -95,9 +95,8 @@ void Simulation_Draw(Simulation *pSim)
 
 	Clay_RenderCommandArray renderCommands = Clay_EndLayout();
 
-	GridRenderer_Render(&pSim->gridRenderer, &pSim->grid, &pSim->theme);
-
 	Clay_Raylib_Render(renderCommands, NULL);
+	GridRenderer_Render(&pSim->gridRenderer, &pSim->grid, &pSim->theme);
 
 	DrawFPS(0, 0);
 }

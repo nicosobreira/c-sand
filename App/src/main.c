@@ -11,9 +11,6 @@
 typedef struct Game
 {
 	Simulation sim;
-	int fps;
-	int windowWidth;
-	int windowHeight;
 } Game;
 
 void Game_Loop(Game *pGame);

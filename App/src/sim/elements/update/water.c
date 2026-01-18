@@ -1,10 +1,27 @@
 #include "water.h"
 
+#include "raylib.h"
+
 #include "sim/grid.h"
 
 #include "sim/elements/update_utils.h"
 
-// FIX: Water don't form pools
+// FIX: Water only form pools on the right
+
+static bool isPressurized(Grid *pGrid, int index)
+{
+	const int aboveIndex = index - pGrid->width;
+
+	if (!Grid_IsIndexValid(pGrid, index))
+		return false;
+
+	const ElementId aboveId = pGrid->current[aboveIndex];
+
+	if (aboveId == ELEMENT_EMPTY)
+		return false;
+
+	return true;
+}
 
 void update_Water(Grid *pGrid, int index)
 {
@@ -27,10 +44,6 @@ void update_Water(Grid *pGrid, int index)
 	else if (isElementMoveValid(pGrid, index, index + 1)) // Right
 	{
 		target = index + 1;
-	}
-	else if (isElementMoveValid(pGrid, index, index - 1)) // Left
-	{
-		target = index - 1;
 	}
 	else
 	{

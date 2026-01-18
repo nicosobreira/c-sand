@@ -15,16 +15,17 @@ in
     # Tools
     nativeBuildInputs = with pkgs; [
       git
+      cmake
+
       clang-tools
       cmake-language-server
-      cmake
 
       hotspot
       perf
     ];
 
     # Libraries
-    buildInputs = with pkgs; [
+    buildInputs = [
       raylib_5_5
     ];
   }

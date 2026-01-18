@@ -30,6 +30,7 @@ void GridRenderer_Render(GridRenderer *pRender, Grid *pGrid, Theme *pTheme)
 			pCache->pixels[row + i] = elementColors[e];
 		}
 	}
+
 	UpdateTexture(pCache->texture, pCache->pixels);
 
 	// Draw texture ONCE (scaled)
