@@ -45,18 +45,20 @@ void Grid_Init(Grid *pGrid, int width, int height)
 	Clock_Set(&pGrid->physicsClock, newTime);
 
 	// Default value
+	/*
 	for (size_t i = 0; i < pGrid->totalCells; ++i)
 	{
-		int random = GetRandomValue(0, 9);
-		switch (random)
-		{
-		case 0:
-			pGrid->current[i] = ELEMENT_SAND;
-			break;
-		case 1:
-			pGrid->current[i] = ELEMENT_STONE;
-		}
+	    int random = GetRandomValue(0, 9);
+	    switch (random)
+	    {
+	    case 0:
+	        pGrid->current[i] = ELEMENT_SAND;
+	        break;
+	    case 1:
+	        pGrid->current[i] = ELEMENT_STONE;
+	    }
 	}
+	*/
 }
 
 void Grid_Update(Grid *pGrid, double delta)
@@ -69,7 +71,7 @@ void Grid_Update(Grid *pGrid, double delta)
 	// Copy current state into next
 	memcpy(pGrid->next, pGrid->current, sizeof(ElementId) * pGrid->totalCells);
 
-	for (size_t i = 0; i < pGrid->totalCells; ++i)
+	for (int i = pGrid->totalCells - 1; i >= 0; --i)
 	{
 		ElementTable_Update(pGrid, i);
 	}

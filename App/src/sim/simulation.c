@@ -111,6 +111,34 @@ void Simlation_Keyboard(Simulation *pSim)
 	{
 		pSim->currentId = ELEMENT_WATER;
 	}
+	else if (IsKeyPressed(KEY_THREE))
+	{
+		pSim->currentId = ELEMENT_STONE;
+	}
+	else if (IsKeyPressed(KEY_FOUR))
+	{
+		pSim->currentId = ELEMENT_GLASS;
+	}
+	else if (IsKeyPressed(KEY_FIVE))
+	{
+		pSim->currentId = ELEMENT_LAVA;
+	}
+	else if (IsKeyPressed(KEY_SIX))
+	{
+		pSim->currentId = ELEMENT_EMPTY;
+	}
+	else if (IsKeyPressed(KEY_SEVEN))
+	{
+		pSim->currentId = ELEMENT_EMPTY;
+	}
+	else if (IsKeyPressed(KEY_EIGHT))
+	{
+		pSim->currentId = ELEMENT_EMPTY;
+	}
+	else if (IsKeyPressed(KEY_NINE))
+	{
+		pSim->currentId = ELEMENT_EMPTY;
+	}
 	else if (IsKeyPressed(KEY_ZERO))
 	{
 		pSim->currentId = ELEMENT_EMPTY;

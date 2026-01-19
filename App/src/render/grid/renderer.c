@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include <math.h>
+
 void GridRenderer_Init(GridRenderer *pRender, Grid *pGrid)
 {
 	GridRenderCache_Init(&pRender->cache, pGrid->width, pGrid->height);
@@ -7,11 +9,11 @@ void GridRenderer_Init(GridRenderer *pRender, Grid *pGrid)
 	GridRenderer_Resize(pRender, pGrid);
 }
 
-void GridRenderer_Render(GridRenderer *pRender, Grid *pGrid, Theme *pTheme)
+void GridRenderer_Render(GridRenderer *pRender, Grid *pGrid, const Theme *pTheme)
 {
 	GridRenderCache *pCache = &pRender->cache;
 	Rectangle *pView = &pRender->viewPort;
-	int cellSize = pRender->cellSize;
+	float cellSize = pRender->cellSize;
 
 	for (size_t i = 0; i < pCache->totalPixels; ++i)
 	{
@@ -25,6 +27,13 @@ void GridRenderer_Render(GridRenderer *pRender, Grid *pGrid, Theme *pTheme)
 	DrawTextureEx(pCache->texture, (Vector2){pView->x, pView->y}, 0.0f, (float)cellSize, WHITE);
 }
 
+/** Assert that a number is even
+ */
+static float evenFloat(float a)
+{
+	return roundf(a * 0.5f) * 2.0f;
+}
+
 void GridRenderer_Resize(GridRenderer *pRender, Grid *pGrid)
 {
 	Rectangle *pView = &pRender->viewPort;
@@ -36,20 +45,21 @@ void GridRenderer_Resize(GridRenderer *pRender, Grid *pGrid)
 
 	if (screenWidth < screenHeight)
 	{
-		cellSize = screenWidth / (float)pGrid->width;
+		cellSize = evenFloat(screenWidth / (float)pGrid->width);
 		pView->width = pRender->cellSize * (float)pGrid->width;
 		pView->height = pRender->cellSize * (float)pGrid->height;
 	}
 	else
 	{
-		cellSize = screenHeight / (float)pGrid->height;
+		cellSize = evenFloat(screenHeight / (float)pGrid->height);
 		pView->width = cellSize * (float)pGrid->width;
 		pView->height = cellSize * (float)pGrid->height;
 	}
 
-	// BUG: Why is this equal to zero?
 	pRender->cellSize = cellSize;
 
 	pView->x = (screenWidth - pView->width) / 2.0f;
 	pView->y = (screenHeight - pView->height) / 2.0f;
+
+	TraceLog(LOG_DEBUG, "%f", cellSize);
 }

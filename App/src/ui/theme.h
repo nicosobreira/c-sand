@@ -12,4 +12,4 @@ typedef struct Theme
 	const char *name;
 } Theme;
 
-void Theme_Init(Theme *pTheme, Theme *model);
+void Theme_Init(Theme *pTheme, const Theme *model);

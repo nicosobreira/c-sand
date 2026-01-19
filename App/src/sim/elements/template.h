@@ -23,10 +23,15 @@ typedef struct ElementMetadata
 	 * Ranging between 0 and 100.
 	 */
 	int displaceability;
+
+	/** How much heat affects this element.
+	 * The smaller the value the less affected by heat.
+	 * Ranging between 0 and 100.
+	 */
+	int ignation;
 } ElementMetadata;
 
 typedef struct ElementVisual
 {
 	Color color;
-	char symbol;
 } ElementVisual;

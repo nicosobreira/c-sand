@@ -52,5 +52,7 @@ static inline bool Grid_IsIndexValid(Grid *pGrid, int i)
 
 static inline void Grid_UpdateIndex(Grid *pGrid, int index, ElementId id)
 {
+	assert(Grid_IsIndexValid(pGrid, index));
+
 	pGrid->next[index] = id;
 }

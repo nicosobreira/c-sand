@@ -1,3 +1,8 @@
+/**
+ * @file table.h
+ * @brief Elements Jump Table
+ */
+
 #pragma once
 
 #include <assert.h>
@@ -7,6 +12,8 @@
 
 #include "sim/grid.h"
 
+/** Elements Metadata Jump Table.
+ */
 extern const ElementMetadata g_ElementTable[ELEMENT_TOTAL];
 
 static inline void ElementTable_Update(Grid *pGrid, int index)
