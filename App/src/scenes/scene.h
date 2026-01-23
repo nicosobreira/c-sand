@@ -4,6 +4,8 @@ typedef struct Scene
 {
 	void (*Init)(void *pData);
 	void (*Free)(void *pData);
+
+	/// Also handles **Input**.
 	void (*Update)(void *pData);
 	void (*Draw)(void *pData);
 

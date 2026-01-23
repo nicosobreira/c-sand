@@ -17,7 +17,7 @@ void SimRenderer_Render(SimRenderer *pRender, Sim *pSim, const Theme *pTheme)
 
 	for (size_t i = 0; i < pCache->totalPixels; ++i)
 	{
-		ElementId e = pSim->current[i];
+		ElementId e = Sim_GetId(pSim, i);
 		pCache->pixels[i] = pTheme->elements[e].color;
 	}
 

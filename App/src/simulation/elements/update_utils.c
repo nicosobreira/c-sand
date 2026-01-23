@@ -7,8 +7,8 @@ bool isElementMoveValid(Sim *pSim, int current, int target)
 	if (!Sim_IsIndexValid(pSim, target))
 		return false;
 
-	const ElementId currentId = pSim->current[current];
-	const ElementId targetId = pSim->current[target];
+	const ElementId currentId = Sim_GetId(pSim, current);
+	const ElementId targetId = Sim_GetId(pSim, target);
 
 	const ElementMetadata *currentMetadata = ElementTable_Get(currentId);
 	const ElementMetadata *targetMetadata = ElementTable_Get(targetId);

@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "simulation/elements/id.h"
+#include "simulation/particle/particle.h"
 #include "utils/clock.h"
 
 typedef struct Sim
@@ -16,11 +16,11 @@ typedef struct Sim
 
 	/// Dynamic memory allocated array for reading sim data.
 	/// Has totalCells as capacity.
-	ElementId *current;
+	Particle *current;
 
 	/// Dynamic memory allocated array for updating sim data.
 	/// Has totalCells as capacity.
-	ElementId *next;
+	Particle *next;
 
 	/// Random number between 0 and 100.
 	/// The value is updated on `Sim_Update`.
@@ -50,9 +50,15 @@ static inline bool Sim_IsIndexValid(Sim *pSim, int i)
 	return false;
 }
 
+static inline ElementId Sim_GetId(Sim *pSim, int index)
+{
+	// assert(Sim_IsIndexValid(pSim, index));
+	return pSim->current[index].id;
+}
+
 static inline void Sim_UpdateIndex(Sim *pSim, int index, ElementId id)
 {
 	assert(Sim_IsIndexValid(pSim, index));
 
-	pSim->next[index] = id;
+	pSim->next[index].id = id;
 }

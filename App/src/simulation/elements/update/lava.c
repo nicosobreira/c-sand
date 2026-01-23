@@ -8,7 +8,7 @@
 
 static void ignate(Sim *pSim, int target)
 {
-	const ElementId targetId = pSim->current[target];
+	const ElementId targetId = Sim_GetId(pSim, target);
 
 	if (targetId == ELEMENT_SAND)
 	{

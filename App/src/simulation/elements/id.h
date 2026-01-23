@@ -1,10 +1,8 @@
 #pragma once
 
-#include <stdint.h>
-
 /** Numeric representation of an Element
  */
-typedef enum _ElementId
+typedef enum ElementId
 {
 	ELEMENT_EMPTY = 0,
 	ELEMENT_SAND,
@@ -13,6 +11,4 @@ typedef enum _ElementId
 	ELEMENT_GLASS,
 	ELEMENT_LAVA,
 	ELEMENT_TOTAL
-} _ElementId;
-
-typedef uint8_t ElementId;
+} ElementId;

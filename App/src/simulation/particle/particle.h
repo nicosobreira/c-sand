@@ -10,5 +10,6 @@ typedef struct Particle
 {
 	ElementId id;
 
-	uint8_t volume;
+	/// 0 - 255;
+	int volume;
 } Particle;

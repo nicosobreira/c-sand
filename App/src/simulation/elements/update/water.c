@@ -6,7 +6,7 @@
 
 static inline bool isMoveValid(Sim *pSim, int current, int target)
 {
-	return (isElementMoveValid(pSim, current, target) && pSim->next[target] == ELEMENT_EMPTY);
+	return (isElementMoveValid(pSim, current, target) && pSim->next[target].id == ELEMENT_EMPTY);
 }
 
 /*
@@ -57,7 +57,7 @@ static bool hasWater(Sim *pSim, int target)
 	if (!Sim_IsIndexValid(pSim, target))
 		return false;
 
-	return pSim->next[target] == ELEMENT_WATER;
+	return pSim->next[target].id == ELEMENT_WATER;
 }
 
 void update_Water(Sim *pSim, int index)

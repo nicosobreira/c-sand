@@ -5,9 +5,9 @@
 
 #include "simulation/elements/table.h"
 
-static inline void swapBuffers(ElementId **current, ElementId **next)
+static inline void swapBuffers(Particle **current, Particle **next)
 {
-	ElementId *temp = *current;
+	Particle *temp = *current;
 
 	*current = *next;
 	*next = temp;
@@ -29,11 +29,11 @@ void Sim_Init(Sim *pSim, int width, int height)
 
 	pSim->totalCells = (size_t)(pSim->width * pSim->height);
 
-	pSim->current = malloc((size_t)(sizeof(ElementId) * pSim->totalCells));
-	pSim->next = malloc((size_t)(sizeof(ElementId) * pSim->totalCells));
+	pSim->current = malloc((size_t)(sizeof(Particle) * pSim->totalCells));
+	pSim->next = malloc((size_t)(sizeof(Particle) * pSim->totalCells));
 
-	memset(pSim->current, ELEMENT_EMPTY, sizeof(ElementId) * pSim->totalCells);
-	memset(pSim->next, ELEMENT_EMPTY, sizeof(ElementId) * pSim->totalCells);
+	memset(pSim->current, ELEMENT_EMPTY, sizeof(Particle) * pSim->totalCells);
+	memset(pSim->next, ELEMENT_EMPTY, sizeof(Particle) * pSim->totalCells);
 
 	if (pSim->current == NULL || pSim->next == NULL)
 	{
@@ -45,20 +45,20 @@ void Sim_Init(Sim *pSim, int width, int height)
 	Clock_Set(&pSim->physicsClock, newTime);
 
 	// Default value
-	/*
+	// /*
 	for (size_t i = 0; i < pSim->totalCells; ++i)
 	{
-	    int random = GetRandomValue(0, 9);
-	    switch (random)
-	    {
-	    case 0:
-	        pSim->current[i] = ELEMENT_SAND;
-	        break;
-	    case 1:
-	        pSim->current[i] = ELEMENT_STONE;
-	    }
+		int random = GetRandomValue(0, 9);
+		switch (random)
+		{
+		case 0:
+			pSim->current[i].id = ELEMENT_SAND;
+			break;
+		case 1:
+			pSim->current[i].id = ELEMENT_WATER;
+		}
 	}
-	*/
+	// */
 }
 
 void Sim_Update(Sim *pSim, double delta)
@@ -69,12 +69,19 @@ void Sim_Update(Sim *pSim, double delta)
 	pSim->randomNumber100 = GetRandomValue(0, 100);
 
 	// Copy current state into next
-	memcpy(pSim->next, pSim->current, sizeof(ElementId) * pSim->totalCells);
+	memcpy(pSim->next, pSim->current, sizeof(Particle) * pSim->totalCells);
 
-	for (int i = pSim->totalCells - 1; i >= 0; --i)
+	for (int i = 0; i < pSim->totalCells; ++i)
 	{
 		ElementTable_Update(pSim, i);
 	}
+
+	/*
+	for (int i = pSim->totalCells - 1; i >= 0; --i)
+	{
+	    ElementTable_Update(pSim, i);
+	}
+	*/
 
 	swapBuffers(&pSim->current, &pSim->next);
 }
