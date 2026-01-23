@@ -6,7 +6,7 @@
 
 #include "raylib.h"
 
-void GridRenderCache_Init(GridRenderCache *cache, int width, int height)
+void SimRenderCache_Init(SimRenderCache *cache, int width, int height)
 {
 	cache->width = width;
 	cache->height = height;
@@ -26,10 +26,10 @@ void GridRenderCache_Init(GridRenderCache *cache, int width, int height)
 	cache->texture = LoadTextureFromImage(image);
 }
 
-void GridRenderCache_Free(GridRenderCache *cache)
+void SimRenderCache_Free(SimRenderCache *cache)
 {
 	UnloadTexture(cache->texture);
 	free(cache->pixels);
 
-	memset(cache, 0, sizeof(GridRenderCache));
+	memset(cache, 0, sizeof(SimRenderCache));
 }

@@ -2,8 +2,8 @@
 
 #include "raylib.h"
 
-#include "sim/elements/id.h"
-#include "sim/elements/template.h"
+#include "simulation/elements/id.h"
+#include "simulation/elements/template.h"
 
 typedef struct Theme
 {

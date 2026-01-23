@@ -1,13 +1,15 @@
 #pragma once
 
-#include "render/grid/renderer.h"
-#include "sim/grid.h"
+#include "render/sim/renderer.h"
+#include "simulation/sim.h"
 #include "ui/theme.h"
+
+#include "scenes/scene.h"
 
 typedef struct Simulation
 {
-	GridRenderer gridRenderer;
-	Grid grid;
+	SimRenderer simRenderer;
+	Sim sim;
 	Theme theme;
 	ElementId currentId;
 } Simulation;
@@ -26,5 +28,7 @@ void Simulation_Click(Simulation *pSim);
 
 static inline void Simulation_Resize(Simulation *pSim)
 {
-	GridRenderer_Resize(&pSim->gridRenderer, &pSim->grid);
+	SimRenderer_Resize(&pSim->simRenderer, &pSim->sim);
 }
+
+Scene Simulation_Scene();

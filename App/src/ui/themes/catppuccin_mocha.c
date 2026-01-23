@@ -1,6 +1,6 @@
 #include "catppuccin_mocha.h"
 
-#include "sim/elements/id.h"
+#include "simulation/elements/id.h"
 
 const Theme Theme_CatpuccinMocha = {
     .name = "Catppuccin Mocha",

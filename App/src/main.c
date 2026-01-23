@@ -4,7 +4,14 @@
 #include "clay.h"
 #include "raylib.h"
 
-#include "sim/simulation.h"
+#include "scenes/scenes/simulation.h"
+
+typedef enum SceneId
+{
+	SCENE_PAUSE = 0,
+	SCENE_SIMULATION,
+	SCENE_TOTAL,
+} SceneId;
 
 typedef struct Game
 {
@@ -113,7 +120,7 @@ void Game_Draw(Game *pGame)
 		Simulation_Resize(&pGame->sim);
 	}
 
-	Rectangle *pView = &pGame->sim.gridRenderer.viewPort;
+	Rectangle *pView = &pGame->sim.simRenderer.viewPort;
 
 	const Clay_Dimensions dimensions = {
 	    pView->width + pView->x,

@@ -2,13 +2,13 @@
 
 #include "table.h"
 
-bool isElementMoveValid(Grid *pGrid, int current, int target)
+bool isElementMoveValid(Sim *pSim, int current, int target)
 {
-	if (!Grid_IsIndexValid(pGrid, target))
+	if (!Sim_IsIndexValid(pSim, target))
 		return false;
 
-	const ElementId currentId = pGrid->current[current];
-	const ElementId targetId = pGrid->current[target];
+	const ElementId currentId = pSim->current[current];
+	const ElementId targetId = pSim->current[target];
 
 	const ElementMetadata *currentMetadata = ElementTable_Get(currentId);
 	const ElementMetadata *targetMetadata = ElementTable_Get(targetId);

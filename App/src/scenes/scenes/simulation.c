@@ -8,7 +8,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "sim/grid.h"
+#include "simulation/sim.h"
 #include "ui/button.h"
 
 #include "ui/themes/catppuccin_mocha.h"
@@ -20,23 +20,23 @@ void Simulation_Init(Simulation *pSim)
 	const int defaultWidth = 512;
 	const int defaultHeight = 280;
 
-	Grid_Init(&pSim->grid, defaultWidth, defaultHeight);
+	Sim_Init(&pSim->sim, defaultWidth, defaultHeight);
 
 	Theme_Init(&pSim->theme, &Theme_CatpuccinMocha);
 
-	GridRenderer_Init(&pSim->gridRenderer, &pSim->grid);
+	SimRenderer_Init(&pSim->simRenderer, &pSim->sim);
 
-	GridRenderer_Resize(&pSim->gridRenderer, &pSim->grid);
+	SimRenderer_Resize(&pSim->simRenderer, &pSim->sim);
 }
 
 void Simulation_Update(Simulation *pSim, double delta)
 {
-	Grid_Update(&pSim->grid, delta);
+	Sim_Update(&pSim->sim, delta);
 }
 
 void Simulation_Free(Simulation *pSim)
 {
-	Grid_Free(&pSim->grid);
+	Sim_Free(&pSim->sim);
 
 	memset(pSim, 0, sizeof(Simulation));
 }
@@ -96,7 +96,7 @@ void Simulation_Draw(Simulation *pSim)
 	Clay_RenderCommandArray renderCommands = Clay_EndLayout();
 
 	Clay_Raylib_Render(renderCommands, NULL);
-	GridRenderer_Render(&pSim->gridRenderer, &pSim->grid, &pSim->theme);
+	SimRenderer_Render(&pSim->simRenderer, &pSim->sim, &pSim->theme);
 
 	DrawFPS(0, 0);
 }
@@ -147,8 +147,8 @@ void Simlation_Keyboard(Simulation *pSim)
 
 void Simulation_Click(Simulation *pSim)
 {
-	Rectangle *pView = &pSim->gridRenderer.viewPort;
-	float cellSize = (float)pSim->gridRenderer.cellSize;
+	Rectangle *pView = &pSim->simRenderer.viewPort;
+	float cellSize = (float)pSim->simRenderer.cellSize;
 
 	if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		return;
@@ -166,7 +166,14 @@ void Simulation_Click(Simulation *pSim)
 	mouseInView.x = roundf(mouseInView.x);
 	mouseInView.y = roundf(mouseInView.y);
 
-	int index = Grid_GetIndex((int)mouseInView.y, (int)mouseInView.x, pSim->grid.width);
+	int index = Sim_GetIndex((int)mouseInView.y, (int)mouseInView.x, pSim->sim.width);
 
-	pSim->grid.current[index] = pSim->currentId;
+	pSim->sim.current[index] = pSim->currentId;
+}
+
+Scene Simulation_Scene()
+{
+	Scene scene;
+
+	return scene;
 }

@@ -4,13 +4,13 @@
 
 #include "raylib.h"
 
-#include "sim/grid_def.h"
+#include "simulation/sim_def.h"
 
 /** Element simulation update function
- * @param pGrid The grid
- * @param index Current Grid_Update index
+ * @param pSim The sim
+ * @param index Current Sim_Update index
  */
-typedef void (*ElementUpdate)(Grid *pGrid, int index);
+typedef void (*ElementUpdate)(Sim *pSim, int index);
 
 typedef struct ElementMetadata
 {

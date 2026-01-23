@@ -2,13 +2,13 @@
 
 #include <stdbool.h>
 
-#include "sim/grid.h"
+#include "simulation/sim.h"
 
 /** Check if the index bellow is valid
  * It first checks if target Index is valid then checks both elements
  * displaceability.
- * @param current Valid pGrid cell index
+ * @param current Valid pSim cell index
  * @param target Unkown cell index
  * @return True if move is valid, otherwise False
  */
-bool isElementMoveValid(Grid *pGrid, int current, int target);
+bool isElementMoveValid(Sim *pSim, int current, int target);

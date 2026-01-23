@@ -10,16 +10,16 @@
 #include "id.h"
 #include "template.h"
 
-#include "sim/grid.h"
+#include "simulation/sim.h"
 
 /** Elements Metadata Jump Table.
  */
 extern const ElementMetadata g_ElementTable[ELEMENT_TOTAL];
 
-static inline void ElementTable_Update(Grid *pGrid, int index)
+static inline void ElementTable_Update(Sim *pSim, int index)
 {
-	const ElementId id = pGrid->current[index];
-	g_ElementTable[id].updateFunc(pGrid, index);
+	const ElementId id = pSim->current[index];
+	g_ElementTable[id].updateFunc(pSim, index);
 }
 
 /** Get ElementMetadata info
