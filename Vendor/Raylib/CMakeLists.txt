@@ -17,3 +17,10 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
   )
   FetchContent_MakeAvailable(raylib)
 endif()
+
+# Checks if OSX and links appropriate frameworks (only required on MacOS)
+if (APPLE)
+    target_link_libraries(raylib "-framework IOKit")
+    target_link_libraries(raylib "-framework Cocoa")
+    target_link_libraries(raylib "-framework OpenGL")
+endif()

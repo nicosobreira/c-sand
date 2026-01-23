@@ -11,99 +11,112 @@ static inline bool isIndexValid(int capacity, int index)
 	return (index >= 0 && index < capacity);
 }
 
-void SceneManager_Init(SManager *pMan, int capacity)
+SManager g_SceneManager = {0};
+
+void SceneManager_Init(int capacity)
 {
 	if (capacity <= 0)
 		exit(1);
 
-	pMan->capacity = capacity;
-	pMan->scenes = malloc(pMan->capacity * sizeof(Scene));
+	g_SceneManager.capacity = capacity;
+	g_SceneManager.scenes = malloc(g_SceneManager.capacity * sizeof(Scene));
 
-	pMan->currentIndex = 0;
+	g_SceneManager.currentIndex = 0;
 }
 
-void SceneManager_Free(SManager *pMan)
+void SceneManager_Free(void)
 {
-	for (int i = 0; i < pMan->capacity; ++i)
+	for (int i = 0; i < g_SceneManager.capacity; ++i)
 	{
-		void *pData = pMan->scenes[i].pData;
-		pMan->scenes[i].Free(pData);
+		void *pData = g_SceneManager.scenes[i].pData;
+		g_SceneManager.scenes[i].Free(pData);
 	}
 
-	memset(pMan->scenes, 0, pMan->capacity * sizeof(Scene));
-	free(pMan->scenes);
+	memset(g_SceneManager.scenes, 0, g_SceneManager.capacity * sizeof(Scene));
+	free(g_SceneManager.scenes);
 
-	memset(pMan, 0, sizeof(SManager));
+	memset(&g_SceneManager, 0, sizeof(SManager));
 }
 
-void SceneManager_Switch(SManager *pMan, int currentIndex)
+void SceneManager_Switch(int newIndex)
 {
-	if (!isIndexValid(pMan->capacity, currentIndex))
+	if (!isIndexValid(g_SceneManager.capacity, newIndex))
 	{
 		exit(1);
 	}
 
-	pMan->currentIndex = currentIndex;
-	pMan->hasSwitch = true;
+	g_SceneManager.currentIndex = newIndex;
+
+	TraceLog(LOG_DEBUG, "Current Index: %d", g_SceneManager.currentIndex);
 }
 
-void SceneManager_Add(SManager *pMan, Scene (*SceneFunc)(void), int index)
+void SceneManager_Add(Scene (*SceneFunc)(void), int index)
 {
-	if (!isIndexValid(pMan->capacity, index))
+	if (!isIndexValid(g_SceneManager.capacity, index))
 	{
 		exit(2);
 	}
 
 	// NOTE: Struct copy, not reference!
-	pMan->scenes[index] = SceneFunc();
+	g_SceneManager.scenes[index] = SceneFunc();
 }
 
-void SceneManager_Loop(SManager *pMan)
+void SceneManager_Loop(void)
 {
 	while (!WindowShouldClose())
 	{
-		Scene_Update(pMan);
-
-		if (pMan->hasSwitch)
-		{
-			pMan->hasSwitch = false;
-			continue;
-		}
+		Scene_Update();
 
 		BeginDrawing();
-		Scene_Draw(pMan);
+		Scene_Draw();
 		EndDrawing();
 	}
 }
 
-void Scene_Init(SManager *pMan)
+void SceneIndex_Init(int index)
 {
-	int i = pMan->currentIndex;
-	void *pData = pMan->scenes[i].pData;
+	void *pData = g_SceneManager.scenes[index].pData;
 
-	pMan->scenes[i].Init(pData);
+	g_SceneManager.scenes[index].Init(pData);
 }
 
-void Scene_Free(SManager *pMan)
+void SceneIndex_Free(int index)
 {
-	int i = pMan->currentIndex;
-	void *pData = pMan->scenes[i].pData;
+	void *pData = g_SceneManager.scenes[index].pData;
 
-	pMan->scenes[i].Free(pData);
+	g_SceneManager.scenes[index].Free(pData);
 }
 
-void Scene_Update(SManager *pMan)
+void SceneIndex_Update(int index)
 {
-	int i = pMan->currentIndex;
-	void *pData = pMan->scenes[i].pData;
+	void *pData = g_SceneManager.scenes[index].pData;
 
-	pMan->scenes[i].Update(pData);
+	g_SceneManager.scenes[index].Update(pData);
 }
 
-void Scene_Draw(SManager *pMan)
+void SceneIndex_Draw(int index)
 {
-	int i = pMan->currentIndex;
-	void *pData = pMan->scenes[i].pData;
+	void *pData = g_SceneManager.scenes[index].pData;
 
-	pMan->scenes[i].Draw(pData);
+	g_SceneManager.scenes[index].Draw(pData);
+}
+
+void Scene_Init(void)
+{
+	SceneIndex_Init(g_SceneManager.currentIndex);
+}
+
+void Scene_Free(void)
+{
+	SceneIndex_Free(g_SceneManager.currentIndex);
+}
+
+void Scene_Update(void)
+{
+	SceneIndex_Update(g_SceneManager.currentIndex);
+}
+
+void Scene_Draw(void)
+{
+	SceneIndex_Draw(g_SceneManager.currentIndex);
 }

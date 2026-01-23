@@ -8,8 +8,6 @@
 
 #include "scenes_id.h"
 
-void SceneManager_Loop(SManager *pMan);
-
 static void initRaylib(void)
 {
 #if defined(DEBUG)
@@ -31,17 +29,18 @@ int main(void)
 {
 	initRaylib();
 
-	SManager manager;
+	// NOTE: The `SceneManager_Init` initialize
+	// the g_SceneManager global variable.
+	SceneManager_Init(SCENE_TOTAL);
 
-	SceneManager_Init(&manager, SCENE_TOTAL);
-	SceneManager_Add(&manager, Game_Scene, SCENE_GAME);
-	SceneManager_Add(&manager, Pause_Scene, SCENE_PAUSE);
+	SceneManager_Add(Game_Scene, SCENE_GAME);
+	SceneManager_Add(Pause_Scene, SCENE_PAUSE);
 
-	SceneManager_Switch(&manager, SCENE_GAME);
+	SceneManager_Switch(SCENE_GAME);
 
-	SceneManager_Loop(&manager);
+	SceneManager_Loop();
 
-	SceneManager_Free(&manager);
+	SceneManager_Free();
 
 	CloseWindow();
 

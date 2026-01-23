@@ -1,12 +1,14 @@
 #include "game.h"
 
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "clay.h"
 #include "raylib.h"
 #include "raymath.h"
 
+#include "scenes/manager.h"
+#include "scenes_id.h"
 #include "simulation/sim.h"
 
 #include "ui/themes/catppuccin_mocha.h"
@@ -60,6 +62,11 @@ void Game_Draw(void *data)
 
 void Game_Keyboard(Game *pGame)
 {
+	if (IsKeyPressed(KEY_P))
+	{
+		SceneManager_Switch(SCENE_PAUSE);
+	}
+
 	if (IsKeyPressed(KEY_ONE))
 	{
 		pGame->currentId = ELEMENT_SAND;

@@ -18,25 +18,34 @@ typedef struct SceneManager
 	int capacity;
 
 	int currentIndex;
-
-	bool hasSwitch;
 } SManager;
 
-void SceneManager_Init(SManager *pMan, int capacity);
+/// Only the functions above should change this variable.
+extern SManager g_SceneManager;
 
-void SceneManager_Free(SManager *pMan);
+void SceneManager_Init(int capacity);
 
-void SceneManager_Switch(SManager *pMan, int currentIndex);
+void SceneManager_Free(void);
 
-void SceneManager_Loop(SManager *pMan);
+void SceneManager_Switch(int newIndex);
+
+void SceneManager_Loop(void);
 
 /// Add a Scene to `scenes`.
-void SceneManager_Add(SManager *pMan, Scene (*SceneFunc)(void), int index);
+void SceneManager_Add(Scene (*SceneFunc)(void), int index);
 
-void Scene_Init(SManager *pMan);
+void SceneIndex_Init(int index);
 
-void Scene_Free(SManager *pMan);
+void SceneIndex_Free(int index);
 
-void Scene_Update(SManager *pMan);
+void SceneIndex_Update(int index);
 
-void Scene_Draw(SManager *pMan);
+void SceneIndex_Draw(int index);
+
+void Scene_Init(void);
+
+void Scene_Free(void);
+
+void Scene_Update(void);
+
+void Scene_Draw(void);
