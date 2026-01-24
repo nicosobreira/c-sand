@@ -1,0 +1,10 @@
+#pragma once
+
+typedef enum Layout
+{
+	LAYOUT_TOP_LEFT,
+	LAYOUT_TOP_RIGHT,
+	LAYOUT_BOTTOM_LEFT,
+	LAYOUT_BOTTOM_RIGHT,
+	LAYOUT_CENTER,
+} Layout;

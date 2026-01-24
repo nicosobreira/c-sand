@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "raygui.h"
 #include "raylib.h"
 #include "raymath.h"
 
@@ -11,6 +12,7 @@
 #include "scenes_id.h"
 #include "simulation/sim.h"
 
+#include "ui/game/brush.h"
 #include "ui/themes/catppuccin_mocha.h"
 
 void Game_Init(void *data)
@@ -27,6 +29,8 @@ void Game_Init(void *data)
 	Theme_Init(&pGame->theme, &Theme_CatpuccinMocha);
 
 	SimRenderer_Init(&pGame->simRenderer, &pGame->sim);
+
+	GameUi_Init(&pGame->ui);
 }
 
 void Game_Free(void *data)
@@ -48,7 +52,7 @@ void Game_Update(void *data)
 
 	Game_Mouse(pGame);
 
-	Sim_Update(&pGame->sim, 0.016);
+	Sim_Update(&pGame->sim, GetFrameTime());
 }
 
 void Game_Draw(void *data)
@@ -57,7 +61,8 @@ void Game_Draw(void *data)
 
 	SimRenderer_Render(&pGame->simRenderer, &pGame->sim, &pGame->theme);
 
-	DrawFPS(0, 0);
+	Brush_Draw(NULL);
+	GameUi_Draw(&pGame->ui, &pGame->theme);
 }
 
 void Game_Keyboard(Game *pGame)
@@ -69,43 +74,43 @@ void Game_Keyboard(Game *pGame)
 
 	if (IsKeyPressed(KEY_ONE))
 	{
-		pGame->currentId = ELEMENT_SAND;
+		pGame->ui.elements.current = ELEMENT_SAND;
 	}
 	else if (IsKeyPressed(KEY_TWO))
 	{
-		pGame->currentId = ELEMENT_WATER;
+		pGame->ui.elements.current = ELEMENT_WATER;
 	}
 	else if (IsKeyPressed(KEY_THREE))
 	{
-		pGame->currentId = ELEMENT_STONE;
+		pGame->ui.elements.current = ELEMENT_STONE;
 	}
 	else if (IsKeyPressed(KEY_FOUR))
 	{
-		pGame->currentId = ELEMENT_GLASS;
+		pGame->ui.elements.current = ELEMENT_GLASS;
 	}
 	else if (IsKeyPressed(KEY_FIVE))
 	{
-		pGame->currentId = ELEMENT_LAVA;
+		pGame->ui.elements.current = ELEMENT_LAVA;
 	}
 	else if (IsKeyPressed(KEY_SIX))
 	{
-		pGame->currentId = ELEMENT_EMPTY;
+		pGame->ui.elements.current = ELEMENT_EMPTY;
 	}
 	else if (IsKeyPressed(KEY_SEVEN))
 	{
-		pGame->currentId = ELEMENT_EMPTY;
+		pGame->ui.elements.current = ELEMENT_EMPTY;
 	}
 	else if (IsKeyPressed(KEY_EIGHT))
 	{
-		pGame->currentId = ELEMENT_EMPTY;
+		pGame->ui.elements.current = ELEMENT_EMPTY;
 	}
 	else if (IsKeyPressed(KEY_NINE))
 	{
-		pGame->currentId = ELEMENT_EMPTY;
+		pGame->ui.elements.current = ELEMENT_EMPTY;
 	}
 	else if (IsKeyPressed(KEY_ZERO))
 	{
-		pGame->currentId = ELEMENT_EMPTY;
+		pGame->ui.elements.current = ELEMENT_EMPTY;
 	}
 }
 
@@ -132,7 +137,7 @@ void Game_Mouse(Game *pGame)
 
 	int index = Sim_GetIndex((int)mouseInView.y, (int)mouseInView.x, pGame->sim.width);
 
-	pGame->sim.current[index].id = pGame->currentId;
+	pGame->sim.current[index].id = pGame->ui.elements.current;
 }
 
 Scene Game_Scene(void)

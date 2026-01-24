@@ -27,7 +27,7 @@ set(RELWITHDEFINFO_FLAGS
   -O3
   -g
   -fno-omit-frame-pointer
-  -DDEBUG
+  -DNDEBUG
 )
 
 if (MSVC)

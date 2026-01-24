@@ -20,10 +20,12 @@ void SimRenderCache_Init(SimRenderCache *cache, int width, int height)
 	    .width = width,
 	    .height = height,
 	    .mipmaps = 1,
+	    /// Raylib `Color` format
 	    .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8,
 	};
 
 	cache->texture = LoadTextureFromImage(image);
+	SetTextureFilter(cache->texture, TEXTURE_FILTER_POINT);
 }
 
 void SimRenderCache_Free(SimRenderCache *cache)

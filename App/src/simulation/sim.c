@@ -45,20 +45,21 @@ void Sim_Init(Sim *pSim, int width, int height)
 	Clock_Set(&pSim->physicsClock, newTime);
 
 	// Default value
-	// /*
+	/*
 	for (size_t i = 0; i < pSim->totalCells; ++i)
 	{
-		int random = GetRandomValue(0, 9);
-		switch (random)
-		{
-		case 0:
-			pSim->current[i].id = ELEMENT_SAND;
-			break;
-		case 1:
-			pSim->current[i].id = ELEMENT_WATER;
-		}
+	    int random = GetRandomValue(0, 9);
+	    switch (random)
+	    {
+	    case 0:
+	        pSim->current[i].id = ELEMENT_SAND;
+	        break;
+	    case 1:
+	        pSim->current[i].id = ELEMENT_WATER;
+	    }
 	}
-	// */
+	*/
+	memcpy(pSim->next, pSim->current, sizeof(Particle) * pSim->totalCells);
 }
 
 void Sim_Update(Sim *pSim, double delta)
@@ -69,12 +70,14 @@ void Sim_Update(Sim *pSim, double delta)
 	pSim->randomNumber100 = GetRandomValue(0, 100);
 
 	// Copy current state into next
-	memcpy(pSim->next, pSim->current, sizeof(Particle) * pSim->totalCells);
+	// memcpy(pSim->next, pSim->current, sizeof(Particle) * pSim->totalCells);
 
+	// /*
 	for (int i = 0; i < pSim->totalCells; ++i)
 	{
 		ElementTable_Update(pSim, i);
 	}
+	// */
 
 	/*
 	for (int i = pSim->totalCells - 1; i >= 0; --i)

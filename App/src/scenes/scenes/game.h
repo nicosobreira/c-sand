@@ -2,6 +2,7 @@
 
 #include "render/sim/renderer.h"
 #include "simulation/sim.h"
+#include "ui/game/ui.h"
 #include "ui/theme.h"
 
 #include "scenes/scene.h"
@@ -11,7 +12,7 @@ typedef struct Game
 	SimRenderer simRenderer;
 	Sim sim;
 	Theme theme;
-	ElementId currentId;
+	GameUi ui;
 } Game;
 
 void Game_Init(void *data);
