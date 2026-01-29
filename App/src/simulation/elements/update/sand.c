@@ -4,44 +4,46 @@
 
 #include "simulation/elements/update_utils.h"
 
+static const int g_Size = 2;
+
+static void shuffle(int directions[g_Size])
+{
+	int temp = directions[0];
+
+	directions[0] = directions[1];
+	directions[1] = temp;
+}
+
 void update_Sand(Sim *pSim, int index)
 {
-	const int min = 1;
-	const int max = 99;
+	pSim->sandCount++;
 
-	/** Change of the sand to don't move diagonally.
-	 * Range from 0 to 100.
-	 * 0   - Always move.
-	 * 100 - Stays in the same place.
-	 */
-	const int piling = 30;
-
-	int target = 0;
+	int target = -1;
 
 	const int indexBellow = index + pSim->width;
 
-	if (isElementMoveValid(pSim, index, indexBellow))
+	if (isElementMoveValid(pSim, indexBellow))
 	{
 		target = indexBellow;
 	}
-	else if (isElementMoveValid(pSim, index, indexBellow + 1)) // Diagonal Right
-	{
-		if (pSim->randomNumber100 < piling)
-			return;
-
-		target = indexBellow + 1;
-	}
-	else if (isElementMoveValid(pSim, index, indexBellow - 1)) // Diagonal Left
-	{
-		if (pSim->randomNumber100 < piling)
-			return;
-
-		target = indexBellow - 1;
-	}
 	else
 	{
-		return;
+		int directions[2] = {1, -1};
+
+		if (pSim->randomNumber100 >= 50)
+			shuffle(directions);
+
+		for (int d = 0; d < g_Size - 1; ++d)
+		{
+			if (!isElementMoveValid(pSim, indexBellow + directions[d]))
+				continue;
+
+			target = indexBellow + directions[d];
+		}
 	}
+
+	if (target <= -1)
+		return;
 
 	Sim_UpdateIndex(pSim, index, ELEMENT_EMPTY);
 

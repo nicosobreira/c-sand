@@ -1,25 +1,22 @@
 #include "game.h"
 
-#include <math.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "raygui.h"
 #include "raylib.h"
 #include "raymath.h"
 
 #include "scenes/manager.h"
-#include "scenes_id.h"
+#include "scenes/scenes/pause.h"
 #include "simulation/sim.h"
+#include "utils/free.h"
 
-#include "ui/game/brush.h"
-#include "ui/themes/catppuccin_mocha.h"
+#include "gui/game/brush.h"
+#include "gui/themes/catppuccin_mocha.h"
 
 void Game_Init(void *data)
 {
 	Game *pGame = (Game *)data;
-
-	memset(pGame, 0, sizeof(Game));
 
 	const int defaultWidth = 512;
 	const int defaultHeight = 280;
@@ -38,10 +35,9 @@ void Game_Free(void *data)
 	Game *pGame = (Game *)data;
 
 	Sim_Free(&pGame->sim);
+	SimRenderer_Free(&pGame->simRenderer);
 
-	free(pGame);
-
-	memset(pGame, 0, sizeof(Game));
+	FREE(pGame);
 }
 
 void Game_Update(void *data)
@@ -63,13 +59,17 @@ void Game_Draw(void *data)
 
 	Brush_Draw(NULL);
 	GameUi_Draw(&pGame->ui, &pGame->theme);
+
+	// TraceLog(LOG_DEBUG, "Click:\t%d", clickCount);
+	// TraceLog(LOG_DEBUG, "Sim:\t%d", pGame->sim.sandCount);
 }
 
 void Game_Keyboard(Game *pGame)
 {
 	if (IsKeyPressed(KEY_P))
 	{
-		SceneManager_Switch(SCENE_PAUSE);
+		SetTargetFPS(24);
+		SceneManager_Switch(PAUSE_NAME);
 	}
 
 	if (IsKeyPressed(KEY_ONE))
@@ -136,8 +136,13 @@ void Game_Mouse(Game *pGame)
 	mouseInView.y = roundf(mouseInView.y);
 
 	int index = Sim_GetIndex((int)mouseInView.y, (int)mouseInView.x, pGame->sim.width);
+	if (!Sim_IsIndexValid(&pGame->sim, index))
+	{
+		return;
+	}
 
-	pGame->sim.current[index].id = pGame->ui.elements.current;
+	// pGame->sim.current[index].id = pGame->ui.elements.current;
+	Sim_UserAddElement(&pGame->sim, index, pGame->ui.elements.current);
 }
 
 Scene Game_Scene(void)
@@ -150,9 +155,8 @@ Scene Game_Scene(void)
 	    .Update = Game_Update,
 	    .Draw = Game_Draw,
 	    .pData = data,
+	    .name = GAME_NAME,
 	};
-
-	Game_Init(data);
 
 	return scene;
 }

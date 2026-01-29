@@ -5,10 +5,10 @@
 #include "simulation/sim.h"
 
 /** Check if the index bellow is valid
- * It first checks if target Index is valid then checks both elements
- * displaceability.
- * @param current Valid pSim cell index
+ * It first checks if target index is valid then if the index in occupied on
+ * both current and next buffers
  * @param target Unkown cell index
- * @return True if move is valid, otherwise False
+ * @retval true Valid move
+ * @retval false Invalid move
  */
-bool isElementMoveValid(Sim *pSim, int current, int target);
+bool isElementMoveValid(Sim *pSim, int target);

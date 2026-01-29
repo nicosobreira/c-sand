@@ -1,10 +1,10 @@
 #include "cache.h"
 
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "raylib.h"
+
+#include <stdlib.h>
+
+#include "utils/free.h"
 
 void SimRenderCache_Init(SimRenderCache *cache, int width, int height)
 {
@@ -31,7 +31,5 @@ void SimRenderCache_Init(SimRenderCache *cache, int width, int height)
 void SimRenderCache_Free(SimRenderCache *cache)
 {
 	UnloadTexture(cache->texture);
-	free(cache->pixels);
-
-	memset(cache, 0, sizeof(SimRenderCache));
+	FREE(cache->pixels);
 }

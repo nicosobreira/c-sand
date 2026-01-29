@@ -1,7 +1,7 @@
 #pragma once
 
+#include "gui/theme.h"
 #include "simulation/sim.h"
-#include "ui/theme.h"
 
 #include "cache.h"
 
@@ -14,10 +14,7 @@ typedef struct SimRenderer
 
 void SimRenderer_Init(SimRenderer *pRender, Sim *pSim);
 
-static inline void SimRenderer_Free(SimRenderer *pRender)
-{
-	SimRenderCache_Free(&pRender->cache);
-}
+void SimRenderer_Free(SimRenderer *pRender);
 
 void SimRenderer_Render(SimRenderer *pRender, Sim *pSim, const Theme *pTheme);
 

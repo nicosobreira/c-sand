@@ -3,6 +3,7 @@
 #include <stddef.h>
 
 #include "scenes/manager.h"
+#include "scenes/scenes/game.h"
 #include "scenes_id.h"
 
 #include "raylib.h"
@@ -18,15 +19,14 @@ void Pause_Update(void *data)
 
 	if (IsKeyPressed(KEY_P))
 	{
-		SceneManager_Switch(SCENE_GAME);
+		SetTargetFPS(60);
+		SceneManager_Switch(GAME_NAME);
 	}
 }
 
 void Pause_Draw(void *data)
 {
 	(void)data;
-
-	SceneIndex_Draw(SCENE_GAME);
 
 	// clang-format off
 	DrawRectangle(
@@ -63,6 +63,7 @@ Scene Pause_Scene(void)
 	    .Update = Pause_Update,
 	    .Draw = Pause_Draw,
 	    .pData = data,
+	    .name = PAUSE_NAME,
 	};
 
 	return scene;

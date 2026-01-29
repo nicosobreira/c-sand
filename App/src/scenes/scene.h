@@ -12,4 +12,8 @@ typedef struct Scene
 	/// Heap allocated data pointer.
 	/// This `Scene` manages the lifetime.
 	void *pData;
+
+	/// Name of the scene.
+	/// Lowercase only. Spaces turn into "_".
+	const char *name;
 } Scene;

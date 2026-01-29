@@ -1,14 +1,36 @@
-#include <stddef.h>
-
 #include "raylib.h"
+
+#include <stdbool.h>
 
 #include "scenes/manager.h"
 #include "scenes/scenes/game.h"
 #include "scenes/scenes/pause.h"
 
-#include "scenes_id.h"
+void initRaylib(void);
 
-static void initRaylib(void)
+int main(int argc, char *argv[])
+{
+	initRaylib();
+
+	// NOTE: The `SceneManager_Init` initialize
+	// the g_SceneManager global variable.
+	SceneManager_Init();
+
+	SceneManager_Register(Game_Scene);
+	SceneManager_Register(Pause_Scene);
+
+	SceneManager_Switch(GAME_NAME);
+
+	SceneManager_Loop();
+
+	SceneManager_Free();
+
+	CloseWindow();
+
+	return 0;
+}
+
+void initRaylib(void)
 {
 #if defined(DEBUG)
 	SetTraceLogLevel(LOG_DEBUG);
@@ -23,26 +45,4 @@ static void initRaylib(void)
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(windowWidth, windowHeight, "Sand Simulator");
 	SetTargetFPS(fps);
-}
-
-int main(void)
-{
-	initRaylib();
-
-	// NOTE: The `SceneManager_Init` initialize
-	// the g_SceneManager global variable.
-	SceneManager_Init(SCENE_TOTAL);
-
-	SceneManager_Add(Game_Scene, SCENE_GAME);
-	SceneManager_Add(Pause_Scene, SCENE_PAUSE);
-
-	SceneManager_Switch(SCENE_GAME);
-
-	SceneManager_Loop();
-
-	SceneManager_Free();
-
-	CloseWindow();
-
-	return 0;
 }

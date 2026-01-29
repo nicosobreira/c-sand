@@ -9,6 +9,11 @@ void SimRenderer_Init(SimRenderer *pRender, Sim *pSim)
 	SimRenderer_Resize(pRender, pSim);
 }
 
+void SimRenderer_Free(SimRenderer *pRender)
+{
+	SimRenderCache_Free(&pRender->cache);
+}
+
 void SimRenderer_Render(SimRenderer *pRender, Sim *pSim, const Theme *pTheme)
 {
 	SimRenderCache *pCache = &pRender->cache;

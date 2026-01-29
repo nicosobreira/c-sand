@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "simulation/particle/particle.h"
+#include "simulation/elements/element.h"
 #include "utils/clock.h"
 
 typedef struct Sim
@@ -12,15 +12,16 @@ typedef struct Sim
 
 	/// The number of cells allocated of current and next array.
 	/// Equals to (width * height).
-	size_t totalCells;
+	size_t size;
+	size_t sizeBytes;
 
 	/// Dynamic memory allocated array for reading sim data.
-	/// Has totalCells as capacity.
-	Particle *current;
+	/// Has size as capacity.
+	Element *current;
 
 	/// Dynamic memory allocated array for updating sim data.
-	/// Has totalCells as capacity.
-	Particle *next;
+	/// Has size as capacity.
+	Element *next;
 
 	/// Random number between 0 and 100.
 	/// The value is updated on `Sim_Update`.
@@ -28,13 +29,17 @@ typedef struct Sim
 
 	int width;
 	int height;
+
+	int sandCount;
 } Sim;
 
 void Sim_Init(Sim *pSim, int width, int height);
 
+void Sim_Free(Sim *pSim);
+
 void Sim_Update(Sim *pSim, double delta);
 
-void Sim_Free(Sim *pSim);
+void Sim_UserAddElement(Sim *pSim, int index, ElementId e);
 
 /// Converts a 2D sim coordinate to a 1D array
 static inline int Sim_GetIndex(int j, int i, int width)
@@ -44,7 +49,7 @@ static inline int Sim_GetIndex(int j, int i, int width)
 
 static inline bool Sim_IsIndexValid(Sim *pSim, int i)
 {
-	if (i >= 0 && i < pSim->totalCells)
+	if (i >= 0 && i < pSim->size)
 		return true;
 
 	return false;

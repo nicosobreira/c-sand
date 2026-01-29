@@ -4,6 +4,8 @@
 
 #include "scene.h"
 
+#define SCENES_MAX 16
+
 /** Array of Scenes
  * I recommend creating an enum of Scenes with the
  * final element holding the total capacity.
@@ -12,37 +14,32 @@ typedef struct SceneManager
 {
 	/// Array of possible scenes.
 	/// Has size of `capacity`.
-	Scene *scenes;
+	Scene scenes[SCENES_MAX];
+	Scene *pCurrent;
 
 	/// Total of possible scenes.
-	int capacity;
-
-	int currentIndex;
+	int count;
 } SManager;
 
-/// Only the functions above should change this variable.
+/// Only the `SceneManager` functions should read/write this variable.
 extern SManager g_SceneManager;
 
-void SceneManager_Init(int capacity);
+void SceneManager_Init(void);
 
 void SceneManager_Free(void);
 
-void SceneManager_Switch(int newIndex);
+void SceneManager_Switch(const char *name);
 
 void SceneManager_Loop(void);
 
+/** Get `pData` from a scene
+ * @return The `pData` void pointer (need to cast!)
+ */
+void *SceneManager_GetDataByIndex(int index);
+
 /// Add a Scene to `scenes`.
-void SceneManager_Add(Scene (*SceneFunc)(void), int index);
-
-void SceneIndex_Init(int index);
-
-void SceneIndex_Free(int index);
-
-void SceneIndex_Update(int index);
-
-void SceneIndex_Draw(int index);
-
-void Scene_Init(void);
+/// Also call the `Init` function.
+void SceneManager_Register(Scene (*SceneConstructor)(void));
 
 void Scene_Free(void);
 

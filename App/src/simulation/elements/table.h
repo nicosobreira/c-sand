@@ -18,7 +18,7 @@ extern const ElementMetadata g_ElementTable[ELEMENT_TOTAL];
 
 static inline void ElementTable_Update(Sim *pSim, int index)
 {
-	const ElementId id = Sim_GetId(pSim, index);
+	ElementId id = Sim_GetId(pSim, index);
 	g_ElementTable[id].updateFunc(pSim, index);
 }
 

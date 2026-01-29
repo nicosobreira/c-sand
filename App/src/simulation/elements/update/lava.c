@@ -39,7 +39,7 @@ void update_Lava(Sim *pSim, int index)
 	int target = 0;
 	const int indexBellow = index + pSim->width;
 
-	if (isElementMoveValid(pSim, index, indexBellow))
+	if (isElementMoveValid(pSim, indexBellow))
 	{
 		target = indexBellow;
 	}

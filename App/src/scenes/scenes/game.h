@@ -1,11 +1,13 @@
 #pragma once
 
+#include "gui/game/ui.h"
+#include "gui/theme.h"
 #include "render/sim/renderer.h"
 #include "simulation/sim.h"
-#include "ui/game/ui.h"
-#include "ui/theme.h"
 
 #include "scenes/scene.h"
+
+#define GAME_NAME ("game")
 
 typedef struct Game
 {

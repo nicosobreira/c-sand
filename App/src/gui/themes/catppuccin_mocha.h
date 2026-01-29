@@ -1,5 +1,5 @@
 #pragma once
 
-#include "ui/theme.h"
+#include "gui/theme.h"
 
 extern const Theme Theme_CatpuccinMocha;

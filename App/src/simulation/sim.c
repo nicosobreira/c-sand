@@ -4,40 +4,40 @@
 #include <string.h>
 
 #include "simulation/elements/table.h"
+#include "utils/free.h"
 
-static inline void swapBuffers(Particle **current, Particle **next)
+static inline void swapBuffers(Element **current, Element **next)
 {
-	Particle *temp = *current;
+	Element *temp = *current;
 
 	*current = *next;
 	*next = temp;
 }
 
-static void handleError(void)
+static void handleError(const char *msg)
 {
-	TraceLog(LOG_ERROR, "Out of memory!");
+	TraceLog(LOG_ERROR, "%s", msg);
 	CloseWindow();
 	exit(EXIT_FAILURE);
 }
 
 void Sim_Init(Sim *pSim, int width, int height)
 {
-	memset(pSim, 0, sizeof(Sim));
-
 	pSim->width = width;
 	pSim->height = height;
 
-	pSim->totalCells = (size_t)(pSim->width * pSim->height);
+	pSim->size = (size_t)(pSim->width * pSim->height);
+	pSim->sizeBytes = (size_t)(sizeof(Element) * pSim->size);
 
-	pSim->current = malloc((size_t)(sizeof(Particle) * pSim->totalCells));
-	pSim->next = malloc((size_t)(sizeof(Particle) * pSim->totalCells));
+	pSim->current = malloc(pSim->sizeBytes);
+	pSim->next = malloc(pSim->sizeBytes);
 
-	memset(pSim->current, ELEMENT_EMPTY, sizeof(Particle) * pSim->totalCells);
-	memset(pSim->next, ELEMENT_EMPTY, sizeof(Particle) * pSim->totalCells);
+	memset(pSim->current, ELEMENT_EMPTY, pSim->sizeBytes);
+	memset(pSim->next, ELEMENT_EMPTY, pSim->sizeBytes);
 
 	if (pSim->current == NULL || pSim->next == NULL)
 	{
-		handleError();
+		handleError("Out of Memory");
 	}
 
 	const double newTime = 0.04;
@@ -45,21 +45,26 @@ void Sim_Init(Sim *pSim, int width, int height)
 	Clock_Set(&pSim->physicsClock, newTime);
 
 	// Default value
-	/*
-	for (size_t i = 0; i < pSim->totalCells; ++i)
+	// /*
+	for (size_t i = 0; i < pSim->size; ++i)
 	{
-	    int random = GetRandomValue(0, 9);
-	    switch (random)
-	    {
-	    case 0:
-	        pSim->current[i].id = ELEMENT_SAND;
-	        break;
-	    case 1:
-	        pSim->current[i].id = ELEMENT_WATER;
-	    }
+		int random = GetRandomValue(0, 9);
+		switch (random)
+		{
+		case 0:
+			pSim->current[i].id = ELEMENT_STONE;
+			break;
+		case 1:
+			pSim->current[i].id = ELEMENT_SAND;
+		}
 	}
-	*/
-	memcpy(pSim->next, pSim->current, sizeof(Particle) * pSim->totalCells);
+	// */
+}
+
+void Sim_Free(Sim *pSim)
+{
+	FREE(pSim->current);
+	FREE(pSim->next);
 }
 
 void Sim_Update(Sim *pSim, double delta)
@@ -67,32 +72,31 @@ void Sim_Update(Sim *pSim, double delta)
 	if (!Clock_Tick(&pSim->physicsClock, delta))
 		return;
 
+	pSim->sandCount = 0;
+
 	pSim->randomNumber100 = GetRandomValue(0, 100);
 
 	// Copy current state into next
-	// memcpy(pSim->next, pSim->current, sizeof(Particle) * pSim->totalCells);
+	memcpy(pSim->next, pSim->current, pSim->sizeBytes);
 
-	// /*
-	for (int i = 0; i < pSim->totalCells; ++i)
+	for (int i = pSim->size - 1; i >= 0; --i)
 	{
 		ElementTable_Update(pSim, i);
 	}
-	// */
 
-	/*
-	for (int i = pSim->totalCells - 1; i >= 0; --i)
-	{
-	    ElementTable_Update(pSim, i);
-	}
-	*/
-
-	swapBuffers(&pSim->current, &pSim->next);
+	swapBuffers(&pSim->next, &pSim->current);
 }
 
-void Sim_Free(Sim *pSim)
+void Sim_UserAddElement(Sim *pSim, int index, ElementId e)
 {
-	free(pSim->current);
-	free(pSim->next);
+	ElementId targetId = e;
+	int direction = pSim->randomNumber100 <= 50 ? -1 : 1;
 
-	memset(pSim, 0, sizeof(Sim));
+	while (targetId != ELEMENT_EMPTY)
+	{
+		index += pSim->width + direction;
+		targetId = Sim_GetId(pSim, index);
+	}
+
+	pSim->current[index].id = e;
 }

@@ -4,9 +4,9 @@
 
 #include "raylib.h"
 
+#include "gui/layout.h"
+#include "gui/theme.h"
 #include "simulation/elements/id.h"
-#include "ui/layout.h"
-#include "ui/theme.h"
 
 typedef struct ElementsUi
 {

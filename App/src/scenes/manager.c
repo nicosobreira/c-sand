@@ -1,64 +1,40 @@
 #include "manager.h"
 
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "raylib.h"
 
-static inline bool isIndexValid(int capacity, int index)
-{
-	return (index >= 0 && index < capacity);
-}
-
 SManager g_SceneManager = {0};
 
-void SceneManager_Init(int capacity)
+void SceneManager_Init(void)
 {
-	if (capacity <= 0)
-		exit(1);
-
-	g_SceneManager.capacity = capacity;
-	g_SceneManager.scenes = malloc(g_SceneManager.capacity * sizeof(Scene));
-
-	g_SceneManager.currentIndex = 0;
+	g_SceneManager.count = 0;
+	g_SceneManager.pCurrent = NULL;
 }
 
 void SceneManager_Free(void)
 {
-	for (int i = 0; i < g_SceneManager.capacity; ++i)
+	for (int i = 0; i < g_SceneManager.count; ++i)
 	{
 		void *pData = g_SceneManager.scenes[i].pData;
 		g_SceneManager.scenes[i].Free(pData);
 	}
-
-	memset(g_SceneManager.scenes, 0, g_SceneManager.capacity * sizeof(Scene));
-	free(g_SceneManager.scenes);
-
-	memset(&g_SceneManager, 0, sizeof(SManager));
 }
 
-void SceneManager_Switch(int newIndex)
+void SceneManager_Switch(const char *name)
 {
-	if (!isIndexValid(g_SceneManager.capacity, newIndex))
+	for (int i = 0; i < g_SceneManager.count; i++)
 	{
-		exit(1);
+		if (strcmp(name, g_SceneManager.scenes[i].name) == 0)
+		{
+			g_SceneManager.pCurrent = &g_SceneManager.scenes[i];
+			return;
+		}
 	}
 
-	g_SceneManager.currentIndex = newIndex;
-
-	TraceLog(LOG_DEBUG, "Current Index: %d", g_SceneManager.currentIndex);
-}
-
-void SceneManager_Add(Scene (*SceneFunc)(void), int index)
-{
-	if (!isIndexValid(g_SceneManager.capacity, index))
-	{
-		exit(2);
-	}
-
-	// NOTE: Struct copy, not reference!
-	g_SceneManager.scenes[index] = SceneFunc();
+	TraceLog(LOG_ERROR, "Unknow scene \"%s\"", name);
+	exit(4);
 }
 
 void SceneManager_Loop(void)
@@ -73,50 +49,36 @@ void SceneManager_Loop(void)
 	}
 }
 
-void SceneIndex_Init(int index)
+void SceneManager_Register(Scene (*SceneConstructor)(void))
 {
-	void *pData = g_SceneManager.scenes[index].pData;
+	if (g_SceneManager.count + 1 > SCENES_MAX)
+	{
+		TraceLog(LOG_ERROR, "SceneManager overflow");
+		exit(2);
+	}
 
-	g_SceneManager.scenes[index].Init(pData);
-}
+	g_SceneManager.scenes[g_SceneManager.count] = SceneConstructor();
 
-void SceneIndex_Free(int index)
-{
-	void *pData = g_SceneManager.scenes[index].pData;
+	void *pData = g_SceneManager.scenes[g_SceneManager.count].pData;
+	g_SceneManager.scenes[g_SceneManager.count].Init(pData);
 
-	g_SceneManager.scenes[index].Free(pData);
-}
-
-void SceneIndex_Update(int index)
-{
-	void *pData = g_SceneManager.scenes[index].pData;
-
-	g_SceneManager.scenes[index].Update(pData);
-}
-
-void SceneIndex_Draw(int index)
-{
-	void *pData = g_SceneManager.scenes[index].pData;
-
-	g_SceneManager.scenes[index].Draw(pData);
-}
-
-void Scene_Init(void)
-{
-	SceneIndex_Init(g_SceneManager.currentIndex);
+	g_SceneManager.count++;
 }
 
 void Scene_Free(void)
 {
-	SceneIndex_Free(g_SceneManager.currentIndex);
+	void *pData = g_SceneManager.pCurrent->pData;
+	g_SceneManager.pCurrent->Free(pData);
 }
 
 void Scene_Update(void)
 {
-	SceneIndex_Update(g_SceneManager.currentIndex);
+	void *pData = g_SceneManager.pCurrent->pData;
+	g_SceneManager.pCurrent->Update(pData);
 }
 
 void Scene_Draw(void)
 {
-	SceneIndex_Draw(g_SceneManager.currentIndex);
+	void *pData = g_SceneManager.pCurrent->pData;
+	g_SceneManager.pCurrent->Draw(pData);
 }

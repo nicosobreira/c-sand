@@ -23,6 +23,8 @@ in
 
       hotspot
       perf
+
+      valgrind
     ];
 
     # Libraries

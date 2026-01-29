@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui/game/elements.h"
+#include "gui/game/elements.h"
 
 typedef struct GameUi
 {
