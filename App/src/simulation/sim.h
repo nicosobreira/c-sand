@@ -57,7 +57,7 @@ static inline bool Sim_IsIndexValid(Sim *pSim, int i)
 
 static inline ElementId Sim_GetId(Sim *pSim, int index)
 {
-	// assert(Sim_IsIndexValid(pSim, index));
+	assert(Sim_IsIndexValid(pSim, index));
 	return pSim->current[index].id;
 }
 
