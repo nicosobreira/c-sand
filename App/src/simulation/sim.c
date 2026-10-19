@@ -72,17 +72,14 @@ void Sim_Update(Sim *pSim, double delta)
 	if (!Clock_Tick(&pSim->physicsClock, delta))
 		return;
 
-	pSim->sandCount = 0;
-
 	pSim->randomNumber100 = GetRandomValue(0, 100);
 
 	// Copy current state into next
 	memcpy(pSim->next, pSim->current, pSim->sizeBytes);
 
-	for (int i = pSim->size - 1; i >= 0; --i)
-	{
-		ElementTable_Update(pSim, i);
-	}
+	// TODO: This is the major drawback in my code.
+	// Use a Data Oriented Design instead
+	ElementTable_Update(pSim);
 
 	swapBuffers(&pSim->next, &pSim->current);
 }

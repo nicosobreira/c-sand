@@ -22,6 +22,15 @@ function run_profile()
 	hotspot perf.data &>/dev/null &
 }
 
+function run_opt()
+{
+	local binary="./build/profile/App/app"
+
+	run_build "profile" "build/profile"
+
+	exec "$binary"
+}
+
 function run_debug() {
   local binary="./build/App/app"
   local preset="debug"
@@ -78,6 +87,9 @@ case "$MODE" in
 		;;
 	run | r)
 		run
+		;;
+	opt | o)
+		run_opt
 		;;
 	*)
 		run

@@ -1,4 +1,5 @@
 # Custom
+.direnv
 Session.vim*
 build
 test

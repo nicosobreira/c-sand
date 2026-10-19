@@ -45,6 +45,7 @@ void SceneManager_Loop(void)
 
 		BeginDrawing();
 		Scene_Draw();
+		DrawText(TextFormat("FPS: %i", GetFPS()), 10, 10, 20, BLACK);
 		EndDrawing();
 	}
 }

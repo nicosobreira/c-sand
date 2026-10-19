@@ -29,8 +29,6 @@ typedef struct Sim
 
 	int width;
 	int height;
-
-	int sandCount;
 } Sim;
 
 void Sim_Init(Sim *pSim, int width, int height);
@@ -49,7 +47,7 @@ static inline int Sim_GetIndex(int j, int i, int width)
 
 static inline bool Sim_IsIndexValid(Sim *pSim, int i)
 {
-	if (i >= 0 && i < pSim->size)
+	if ((unsigned int)i < pSim->size)
 		return true;
 
 	return false;

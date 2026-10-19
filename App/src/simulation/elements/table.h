@@ -11,16 +11,11 @@
 #include "template.h"
 
 #include "simulation/sim.h"
-
 /** Elements Metadata Jump Table.
  */
 extern const ElementMetadata g_ElementTable[ELEMENT_TOTAL];
 
-static inline void ElementTable_Update(Sim *pSim, int index)
-{
-	ElementId id = Sim_GetId(pSim, index);
-	g_ElementTable[id].updateFunc(pSim, index);
-}
+void ElementTable_Update(Sim *pSim);
 
 /** Get ElementMetadata info
  * @param id Unkown ElementId (does not check)

@@ -1,5 +1,7 @@
 # Sand Simulator
 
+![Image of Simulator](./.github/example.webp)
+
 ## Running
 
 ``` bash

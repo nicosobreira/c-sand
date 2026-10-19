@@ -7,7 +7,4 @@
 typedef struct Element
 {
 	ElementId id;
-
-	/// 0 - 255;
-	int volume;
 } Element;

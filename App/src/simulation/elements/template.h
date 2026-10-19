@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "raylib.h"
 
@@ -15,20 +16,19 @@ typedef void (*ElementUpdate)(Sim *pSim, int index);
 typedef struct ElementMetadata
 {
 	const char *name;
-	ElementUpdate updateFunc;
 
-	/** How easily this element is displaced by others.
+	/** How easily this element is replaced by others.
 	 * If another element with a lower value wants to replace the current once
 	 * the lower value wins.
 	 * Ranging between 0 and 100.
 	 */
-	int displaceability;
+	uint8_t displaceability;
 
 	/** How much heat affects this element.
 	 * The smaller the value the less affected by heat.
 	 * Ranging between 0 and 100.
 	 */
-	int ignation;
+	uint8_t ignation;
 } ElementMetadata;
 
 typedef struct ElementVisual

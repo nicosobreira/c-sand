@@ -40,9 +40,9 @@ void initRaylib(void)
 
 	const int windowWidth = 1024;
 	const int windowHeight = 560;
-	const int fps = 60;
+	// const int fps = 60;
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(windowWidth, windowHeight, "Sand Simulator");
-	SetTargetFPS(fps);
+	SetTargetFPS(0);
 }
