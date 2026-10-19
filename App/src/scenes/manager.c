@@ -58,10 +58,11 @@ void SceneManager_Register(Scene (*SceneConstructor)(void))
 		exit(2);
 	}
 
-	g_SceneManager.scenes[g_SceneManager.count] = SceneConstructor();
+	int index = g_SceneManager.count;
+	g_SceneManager.scenes[index] = SceneConstructor();
 
-	void *pData = g_SceneManager.scenes[g_SceneManager.count].pData;
-	g_SceneManager.scenes[g_SceneManager.count].Init(pData);
+	void *pData = g_SceneManager.scenes[index].pData;
+	g_SceneManager.scenes[index].Init(pData);
 
 	g_SceneManager.count++;
 }

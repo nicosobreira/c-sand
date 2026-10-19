@@ -136,6 +136,8 @@ void Game_Mouse(Game *pGame)
 	mouseInView.y = roundf(mouseInView.y);
 
 	int index = Sim_GetIndex((int)mouseInView.y, (int)mouseInView.x, pGame->sim.width);
+	assert(Sim_IsIndexValid(&pGame->sim, index));
+
 	if (!Sim_IsIndexValid(&pGame->sim, index))
 	{
 		return;

@@ -7,8 +7,6 @@
 #define SCENES_MAX 16
 
 /** Array of Scenes
- * I recommend creating an enum of Scenes with the
- * final element holding the total capacity.
  */
 typedef struct SceneManager
 {
